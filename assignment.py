@@ -23,9 +23,22 @@ def jumpk(bs, k):
 def binval(bs):
         return int(bs, 2)
 
-bitstring = '1100010101011001011110'
+
+def royalroads(bs, k):
+        if (len(bs) % k != 0):
+                raise ValueError("Not defined if n not divisible by k.")
+        splits = [bs[x:x+k] for x in range(0, len(bs), k)]
+        count = 0
+        for split in splits:
+                if set(split) == {'1'}:
+                        count += 1
+        return count
+
+
+bitstring = '1111111101011001011110'
 
 print("OneMax: ", onemax(bitstring))
 print("LeadingOnes: ", leadingones(bitstring))
-print("Jump K: ", jumpk(bitstring, 4))
+print("Jump K: ", jumpk(bitstring, 3))
 print("BinVal: ", binval(bitstring))
+print("RoyalRoads: ", royalroads(bitstring, 2))
