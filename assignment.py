@@ -1,5 +1,6 @@
 from bitstring import BitArray
 import random
+import matplotlib.pyplot as plt
 
 def onemax(bs):
         return bs.count(1)
@@ -60,7 +61,7 @@ def rls(fo, n):
         while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
-                i = random.randint(0, len(y) - 1)
+                i = random.randint(0, n - 1)
                 y.invert(i)
                 if (fo.function(y) >= fo.function(x)):
                         x = y
@@ -73,7 +74,7 @@ def ea(fo, n):
         while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
-                for i in range(0, len(y)):
+                for i in range(0, n):
                         if (random.random() < 0.1):
                                 y.invert(i)
                 if (fo.function(y) >= fo.function(x)):
@@ -86,7 +87,7 @@ def rls_modified(fo, n):
         while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
-                i = random.randint(0, len(y) - 1)
+                i = random.randint(0, n - 1)
                 y.invert(i)
                 if (fo.function(y) > fo.function(x)):
                         x = y
@@ -99,7 +100,7 @@ def ea_modified(fo, n):
         while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
-                for i in range(0, len(y)):
+                for i in range(0, n):
                         if (random.random() < 0.1):
                                 y.invert(i)
                 if (fo.function(y) > fo.function(x)):
@@ -108,18 +109,34 @@ def ea_modified(fo, n):
 
 
 if __name__ == "__main__":
-    input = randombitstring(25)
-    n = len(input)
-    fo_onemax = FunctionObject(onemax, n)
-    fo_leadingones = FunctionObject(leadingones, n)
-    fo_jumpk = FunctionObject(jumpk, n)
-    fo_royalroads = FunctionObject(royalroads, n/5)
-    fo_binval = FunctionObject(binval, 2**n - 1)
-    for a in [rls, ea, rls_modified, ea_modified]:
-            for f in [fo_onemax, fo_leadingones, fo_jumpk, fo_binval, fo_royalroads]:
-                iterations = 0
-                for t in range(0, 10):
-                    iterations =+ a(f, n)
-                average = iterations/10
-                print(a.__name__, "and function", f.name(), "with n =", n,"  : ", average)
+        t = []
+        for n in range(25, 51, 25):
+            t.append(n)
+        plotinput = []
+        labels = []
+
+        for a in [rls, ea, rls_modified, ea_modified]:
+                averages = []
+                labels.append(a.__name__)
+                for n in range(25, 51, 25):
+                        fo_onemax = FunctionObject(onemax, n)
+                        fo_leadingones = FunctionObject(leadingones, n)
+                        fo_jumpk = FunctionObject(jumpk, n)
+                        fo_royalroads = FunctionObject(royalroads, n/5)
+                        fo_binval = FunctionObject(binval, 2**n - 1)
+                        for f in [fo_onemax]:
+                                iterations = 0
+                                for times in range(0, 10):
+                                    iterations += a(f, n)
+                                averages.append(iterations/10)
+                plotinput.append(t)
+                plotinput.append(averages)
+
+        print(plotinput)
+        plt.xlabel("n")
+        plt.ylabel("iterations")
+        plt.title("Comparison of RLS and EA for f=MaxOnes")
+        lineObjects = plt.plot(*plotinput)
+        plt.legend(iter(lineObjects), labels)
+        plt.savefig("plot.png")
 
