@@ -23,10 +23,6 @@ def jumpk(bs, k = 3):
         else:
                 raise "WAT"
 
-def binval(bs):
-        return bs.uint
-
-
 def royalroads(bs, k = 5):
         if (len(bs) % k != 0):
                 raise ValueError("Not defined if n not divisible by k.")
@@ -37,7 +33,17 @@ def royalroads(bs, k = 5):
                         count += 1
         return count
 
+def binval(bs):
+        return bs.uint
 
+class FunctionObject:
+        def __init__(self, function, optimum):
+                self.function = function
+                self.optimum = optimum
+        def stopping_criterion_met(self, x):
+                return (self.function(x) == self.optimum)
+        def name(self):
+                return self.function.__name__
 
 
 def randombitstring(n):
@@ -48,70 +54,72 @@ def randombitstring(n):
         return result[:n]
 
 
-def error(function, x, original):
-        return abs(function(x) - function(original))
-
-
-def rls(function, original):
-        x = randombitstring(len(original))
+def rls(fo, n):
+        x = randombitstring(n)
         iterations = 0
-        while not (error(function, x, original) == 0):
+        while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
                 i = random.randint(0, len(y) - 1)
                 y.invert(i)
-                if (error(function, y, original) <= error(function, x, original)):
+                if (fo.function(y) >= fo.function(x)):
                         x = y
         return iterations
 
 
-def ea(function, original):
-        x = randombitstring(len(original))
+def ea(fo, n):
+        x = randombitstring(n)
         iterations = 0
-        while not (error(function, x, original) == 0):
+        while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
                 for i in range(0, len(y)):
                         if (random.random() < 0.1):
                                 y.invert(i)
-                if (error(function, y, original) <= error(function, x, original)):
+                if (fo.function(y) >= fo.function(x)):
                         x = y
         return iterations
 
-def rls_modified(function, original):
-        x = randombitstring(len(original))
+def rls_modified(fo, n):
+        x = randombitstring(n)
         iterations = 0
-        while not (error(function, x, original) == 0):
+        while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
                 i = random.randint(0, len(y) - 1)
                 y.invert(i)
-                if (error(function, y, original) < error(function, x, original)):
+                if (fo.function(y) > fo.function(x)):
                         x = y
         return iterations
 
 
-def ea_modified(function, original):
-        x = randombitstring(len(original))
+def ea_modified(fo, n):
+        x = randombitstring(n)
         iterations = 0
-        while not (error(function, x, original) == 0):
+        while not (fo.stopping_criterion_met(x)):
                 iterations += 1
                 y = x.copy()
                 for i in range(0, len(y)):
                         if (random.random() < 0.1):
                                 y.invert(i)
-                if (error(function, y, original) < error(function, x, original)):
+                if (fo.function(y) > fo.function(x)):
                         x = y
         return iterations
 
 
 if __name__ == "__main__":
     input = randombitstring(25)
+    n = len(input)
+    fo_onemax = FunctionObject(onemax, n)
+    fo_leadingones = FunctionObject(leadingones, n)
+    fo_jumpk = FunctionObject(jumpk, n)
+    fo_royalroads = FunctionObject(royalroads, n/5)
+    fo_binval = FunctionObject(binval, 2**n - 1)
     for a in [rls, ea, rls_modified, ea_modified]:
-            for f in [onemax, leadingones, jumpk, binval]:
-                n = 0
+            for f in [fo_onemax, fo_leadingones, fo_jumpk, fo_binval, fo_royalroads]:
+                iterations = 0
                 for t in range(0, 10):
-                    n =+ a(f, input)
-                average = n/10
-                print(a.__name__, "and function", f.__name__, "with n =", len(input),"  : ", average)
+                    iterations =+ a(f, n)
+                average = iterations/10
+                print(a.__name__, "and function", f.name(), "with n =", n,"  : ", average)
 
