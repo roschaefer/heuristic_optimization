@@ -75,7 +75,7 @@ def ea(fo, n):
                 iterations += 1
                 y = x.copy()
                 for i in range(0, n):
-                        if (random.random() < 0.1):
+                        if (random.random() < .1):
                                 y.invert(i)
                 if (fo.function(y) >= fo.function(x)):
                         x = y
@@ -101,7 +101,7 @@ def ea_modified(fo, n):
                 iterations += 1
                 y = x.copy()
                 for i in range(0, n):
-                        if (random.random() < 0.1):
+                        if (random.random() < .1):
                                 y.invert(i)
                 if (fo.function(y) > fo.function(x)):
                         x = y
@@ -109,26 +109,23 @@ def ea_modified(fo, n):
 
 
 if __name__ == "__main__":
+        n_range = range(25, 551, 25)
         t = []
-        for n in range(25, 51, 25):
+        for n in n_range:
             t.append(n)
+
         plotinput = []
         labels = []
-
-        for a in [rls, ea, rls_modified, ea_modified]:
+        #for a in [rls, ea, rls_modified, ea_modified]:
+        for a in [rls, rls_modified]:
                 averages = []
                 labels.append(a.__name__)
-                for n in range(25, 51, 25):
-                        fo_onemax = FunctionObject(onemax, n)
-                        fo_leadingones = FunctionObject(leadingones, n)
-                        fo_jumpk = FunctionObject(jumpk, n)
-                        fo_royalroads = FunctionObject(royalroads, n/5)
-                        fo_binval = FunctionObject(binval, 2**n - 1)
-                        for f in [fo_onemax]:
-                                iterations = 0
-                                for times in range(0, 10):
-                                    iterations += a(f, n)
-                                averages.append(iterations/10)
+                for n in n_range:
+                        fo = FunctionObject(onemax, n)
+                        iterations = 0
+                        for times in range(0, 10):
+                            iterations += a(fo, n)
+                        averages.append(iterations/10)
                 plotinput.append(t)
                 plotinput.append(averages)
 
@@ -138,5 +135,9 @@ if __name__ == "__main__":
         plt.title("Comparison of RLS and EA for f=MaxOnes")
         lineObjects = plt.plot(*plotinput)
         plt.legend(iter(lineObjects), labels)
-        plt.savefig("plot.png")
+        plt.savefig("plot_onemax.png")
 
+                        #fo_leadingones = FunctionObject(leadingones, n)
+                        #fo_jumpk = FunctionObject(jumpk, n)
+                        #fo_royalroads = FunctionObject(royalroads, n/5)
+                        #fo_binval = FunctionObject(binval, 2**n - 1)
