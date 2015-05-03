@@ -1,4 +1,3 @@
-from bitstring import BitArray
 import random
 import matplotlib.pyplot as plt
 
@@ -30,12 +29,12 @@ def royalroads(bs, k = 5):
         splits = [bs[x:x+k] for x in range(0, len(bs), k)]
         count = 0
         for split in splits:
-                if set(split) == {1}:
+                if all((x == 1) for x in split):
                         count += 1
         return count
 
 def binval(bs):
-        return bs.uint
+        return int("".join(str(x) for x in bs), 2)
 
 class FunctionObject:
         def __init__(self, function, optimum):
@@ -48,11 +47,13 @@ class FunctionObject:
 
 
 def randombitstring(n):
-        result = BitArray(float=random.random(), length=64)
-        while (len(result) < n):
-            temp = BitArray(float=random.random(), length=64)
-            result.append(temp)
-        return result[:n]
+        bs = []
+        for i in range(n):
+                if (random.random() < .5):
+                        bs.append(1)
+                else:
+                        bs.append(0)
+        return bs
 
 
 def rls(fo, n):
@@ -62,7 +63,7 @@ def rls(fo, n):
                 iterations += 1
                 y = x.copy()
                 i = random.randint(0, n - 1)
-                y.invert(i)
+                y[i] = 1 - y[i]
                 if (fo.function(y) >= fo.function(x)):
                         x = y
         return iterations
@@ -76,7 +77,7 @@ def ea(fo, n):
                 y = x.copy()
                 for i in range(0, n):
                         if (random.random() < .1):
-                                y.invert(i)
+                                y[i] = 1 - y[i]
                 if (fo.function(y) >= fo.function(x)):
                         x = y
         return iterations
@@ -88,7 +89,7 @@ def rls_modified(fo, n):
                 iterations += 1
                 y = x.copy()
                 i = random.randint(0, n - 1)
-                y.invert(i)
+                y[i] = 1 - y[i]
                 if (fo.function(y) > fo.function(x)):
                         x = y
         return iterations
@@ -102,42 +103,146 @@ def ea_modified(fo, n):
                 y = x.copy()
                 for i in range(0, n):
                         if (random.random() < .1):
-                                y.invert(i)
+                                y[i] = 1 - y[i]
                 if (fo.function(y) > fo.function(x)):
                         x = y
         return iterations
 
+def plot(plotted_function, plotinput, labels):
+        plt.xlabel("n")
+        plt.ylabel("iterations")
+        plt.title("Comparison of RLS and EA for f={function}".format(function=plotted_function.__name__))
+        lineObjects = plt.plot(*plotinput)
+        plt.legend(iter(lineObjects), labels)
+        plt.savefig("plot_{function}.png".format(function=plotted_function.__name__))
+        plt.close()
 
 if __name__ == "__main__":
-        n_range = range(25, 551, 25)
+        step = 25
+
+
+        # PLOT onemax (all)
+        n_steps = 3
+        n_range = range(step, step*n_steps +1, step)
         t = []
         for n in n_range:
             t.append(n)
 
+        plotted_function = onemax
         plotinput = []
         labels = []
-        #for a in [rls, ea, rls_modified, ea_modified]:
-        for a in [rls, rls_modified]:
+        for a in [rls, ea, rls_modified, ea_modified]:
                 averages = []
                 labels.append(a.__name__)
                 for n in n_range:
-                        fo = FunctionObject(onemax, n)
+                        fo = FunctionObject(plotted_function, n)
                         iterations = 0
                         for times in range(0, 10):
                             iterations += a(fo, n)
                         averages.append(iterations/10)
                 plotinput.append(t)
                 plotinput.append(averages)
+                plotinput.append('s-')
+        plot(plotted_function, plotinput, labels)
 
-        print(plotinput)
-        plt.xlabel("n")
-        plt.ylabel("iterations")
-        plt.title("Comparison of RLS and EA for f=MaxOnes")
-        lineObjects = plt.plot(*plotinput)
-        plt.legend(iter(lineObjects), labels)
-        plt.savefig("plot_onemax.png")
 
-                        #fo_leadingones = FunctionObject(leadingones, n)
-                        #fo_jumpk = FunctionObject(jumpk, n)
-                        #fo_royalroads = FunctionObject(royalroads, n/5)
-                        #fo_binval = FunctionObject(binval, 2**n - 1)
+
+
+        # PLOT leadingones(all)
+        n_steps = 3
+        n_range = range(step, step*n_steps +1, step)
+        t = []
+        for n in n_range:
+            t.append(n)
+
+        plotted_function = leadingones
+        plotinput = []
+        labels = []
+        for a in [rls, ea, rls_modified, ea_modified]:
+                averages = []
+                labels.append(a.__name__)
+                for n in n_range:
+                        fo = FunctionObject(plotted_function, n)
+                        iterations = 0
+                        for times in range(0, 10):
+                            iterations += a(fo, n)
+                        averages.append(iterations/10)
+                plotinput.append(t)
+                plotinput.append(averages)
+                plotinput.append('s-')
+        plot(plotted_function, plotinput, labels)
+
+        # PLOT jumpk(rls, ea)
+        n_steps = 2
+        n_range = range(step, step*n_steps +1, step)
+        t = []
+        for n in n_range:
+            t.append(n)
+
+        plotted_function = jumpk
+        plotinput = []
+        labels = []
+        for a in [rls, ea]:
+                averages = []
+                labels.append(a.__name__)
+                for n in n_range:
+                        fo = FunctionObject(plotted_function, n)
+                        iterations = 0
+                        for times in range(0, 10):
+                            iterations += a(fo, n)
+                        averages.append(iterations/10)
+                plotinput.append(t)
+                plotinput.append(averages)
+                plotinput.append('s-')
+        plot(plotted_function, plotinput, labels)
+
+        # PLOT royalroads(rls, ea)
+        n_steps = 3
+        n_range = range(step, step*n_steps +1, step)
+        t = []
+        for n in n_range:
+            t.append(n)
+
+        plotted_function = royalroads
+        plotinput = []
+        labels = []
+        for a in [rls, ea]:
+                averages = []
+                labels.append(a.__name__)
+                for n in n_range:
+                        fo = FunctionObject(plotted_function, n/5)
+                        iterations = 0
+                        for times in range(0, 10):
+                            iterations += a(fo, n)
+                        averages.append(iterations/10)
+                plotinput.append(t)
+                plotinput.append(averages)
+                plotinput.append('s-')
+        plot(plotted_function, plotinput, labels)
+
+
+        # PLOT binval(all)
+        n_steps = 3
+        n_range = range(step, step*n_steps +1, step)
+        t = []
+        for n in n_range:
+            t.append(n)
+
+        plotted_function = binval
+        plotinput = []
+        labels = []
+        for a in [rls, ea, rls_modified, ea_modified]:
+                averages = []
+                labels.append(a.__name__)
+                for n in n_range:
+                        fo = FunctionObject(plotted_function, 2**n -1)
+                        iterations = 0
+                        for times in range(0, 10):
+                            iterations += a(fo, n)
+                        averages.append(iterations/10)
+                plotinput.append(t)
+                plotinput.append(averages)
+                plotinput.append('s-')
+        plot(plotted_function, plotinput, labels)
+
+
