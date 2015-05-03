@@ -1,0 +1,48 @@
+\documentclass[11pt]{scrartcl}
+\usepackage{luatextra}
+\usepackage{wasysym}
+\usepackage{graphicx}
+
+ 
+ \title{Heuristic Optimization}
+\date{\today}
+\author{Robert Schäfer}
+
+\begin{document}
+\maketitle
+
+\section{Complexity}
+Until submission time, I wasn't able to optimize my code to handle input with n>75 for all 5 functions respectively.
+I profiled my code and the call graph looks fairly OK.
+For function MaxOne I provide plots until n=500, but only for the RLS algorithms.
+The python script becomes really slow if we have more than 100 000 iterations.
+So I apologize for not having expressive plots, but the exercise states ``[...] until you computer does not want any further''.
+
+Findings:
+Most important to say is that the modified version of RLS doesn't terminate for JumpK and RoyalRoads with n\rightarrow infinity.
+In order to reach the optimum (bitstring with all ones) we need to flip bits although the respective function doesn't recognize an improvement.
+So e.g.\ for JumpK, the last k remaining zeros in the bitstring have to be flipped without further assurance.
+Also for RoyalRoads, if there are more zeros in one ``road'', these zeros have to be flipped even though the respective function doesn't confirm an improvement.
+The only way for the modified RLS to terminate is to have a lucky shot during initialization, i.e.\ a randomized bitstring with all ones.
+The modified version of the EA algorithm doesn't perform well for JumpK or RoyalRoads either, but this algorithm is able to terminate since it can flip more than one bit in one iteration.
+
+
+MaxOne, LeadingOnes and Binval must be inside $\mathcal{O}(n\log{}n)$.
+All three algorithms recognize an improvement whenever we flip a zero (at the right position, in case of LeadingOnes), which is the reason for the first coefficient $n$.
+The likelihood to flip a zero decreases the closer we get to the optimum (bitstring with all ones) that's the reason for the second coefficient $log{}\ n$.
+JumpK is inside $\mathcal{O}(n^k)$ so in our case $\mathcal{O}(n^3)$.
+The reason is that we get an improvement for every flipped zero but in the end we need to change the remaining k zeros by chance.
+So the crucial part of the complexity here is to perform the right modifications in our case three times in a row, which is $n^3$.
+Similarly, I would guess the complexity of RoyalRoads to be inside $\mathcal{O}(n^k)$ as well.
+
+\includegraphics[width=\textwidth]{plot_onemax}
+\includegraphics[width=\textwidth]{plot_onemax_only_rls_500}
+\includegraphics[width=\textwidth]{plot_leadingones}
+\includegraphics[width=\textwidth]{plot_jumpk}
+\includegraphics[width=\textwidth]{plot_royalroads}
+\includegraphics[width=\textwidth]{plot_binval}
+
+
+
+
+\end{document}
