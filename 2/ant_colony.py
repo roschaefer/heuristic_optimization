@@ -12,7 +12,11 @@ class Parser:
             tree = ET.parse("./%s" % self.location)
             vertices = tree.getroot().findall('.//vertex')
             for i in range(len(vertices)):
+                vertex = vertices[i]
                 self.__graph.add_node(i)
+                edges = vertex.findall('.//edge')
+                for edge in edges:
+                    self.__graph.add_edge(i, int(edge.text), weight=float(edge.attrib['cost']))
         return self.__graph
 
 

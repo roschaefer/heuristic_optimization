@@ -1,5 +1,9 @@
 import ant_colony
 import pytest
+from IPython import embed
+
+
+
 
 class TestParser:
     @pytest.fixture
@@ -18,19 +22,19 @@ class TestParser:
     def graph(self, parser):
         return parser.graph()
 
-    def test_number_of_nodes(self, parser):
-        assert len(parser.graph().nodes()) == 3
+    def test_number_of_nodes(self,nodes):
+        assert len(nodes) == 3
 
-    def test_edge_weight(self, parser, graph, nodes):
-        assert graph.weight(nodes[0], nodes[1]) == 8.3
-        assert graph.weight(nodes[2], nodes[1]) == 4.0
-        assert graph.weight(nodes[2], nodes[0]) == 9.3
+    def test_edge_weight(self, graph):
+        assert graph.edge[0][1]['weight'] == 83
+        assert graph.edge[2][1]['weight'] == 40
+        assert graph.edge[2][0]['weight'] == 93
 
     def test_is_symmetric_graph(self, graph):
-        assert graph.weight(nodes[2], nodes[1]) == 4.0
-        assert graph.weight(nodes[1], nodes[2]) == 4.0
-        assert graph.weight(nodes[0], nodes[1]) == 8.3
-        assert graph.weight(nodes[1], nodes[0]) == 8.3
+        assert graph.edge[2][1]['weight'] == 40
+        assert graph.edge[1][2]['weight'] == 40
+        assert graph.edge[0][1]['weight'] == 83
+        assert graph.edge[1][0]['weight'] == 83
 
     def test_initial_edge_pheromones(self, edges):
         assert all(edge.pheromone() == 0 for edge in edges)
