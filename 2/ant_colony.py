@@ -16,7 +16,7 @@ class Parser:
                 self.__graph.add_node(i)
                 edges = vertex.findall('.//edge')
                 for edge in edges:
-                    self.__graph.add_edge(i, int(edge.text), weight=float(edge.attrib['cost']))
+                    self.__graph.add_edge(i, int(edge.text), weight=float(edge.attrib['cost']), pheromone=0.0)
         return self.__graph
 
 
