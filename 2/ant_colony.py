@@ -48,7 +48,7 @@ class Solver(object):
         """
         Intended to be the main interface method
         """
-        pass
+        self.problem = self.init_pheromones(self.problem)
 
     def construct(self, pheromones):
         """
@@ -61,3 +61,10 @@ class Solver(object):
             return min((1 - self.RHO) * edge['pheromone'] + self.RHO, self.TAU_MAX)
         else:
             return max((1 - self.RHO) * edge['pheromone'], self.TAU_MIN)
+
+    def init_pheromones(self, graph):
+        for (u, v) in graph.edges():
+            edge = graph[u][v]
+            edge['pheromone'] = self.pheromone(edge)
+        return graph
+
