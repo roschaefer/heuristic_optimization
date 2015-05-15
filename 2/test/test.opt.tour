@@ -1,0 +1,10 @@
+NAME : test_graph.opt.tour
+COMMENT : optimal tour for test_graph
+TYPE : TOUR
+DIMENSION : 3
+TOUR_SECTION
+0
+2
+1
+-1
+EOF
