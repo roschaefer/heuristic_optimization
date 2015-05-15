@@ -3,8 +3,6 @@ import pytest
 from IPython import embed
 
 
-
-
 class TestParser:
     @pytest.fixture
     def parser(self):
@@ -22,7 +20,7 @@ class TestParser:
     def graph(self, parser):
         return parser.graph()
 
-    def test_number_of_nodes(self,nodes):
+    def test_number_of_nodes(self, nodes):
         assert len(nodes) == 3
 
     def test_edge_weight(self, graph):
@@ -37,12 +35,9 @@ class TestParser:
         assert graph.edge[1][0]['weight'] == 83
 
     def test_initial_edge_pheromones(self, graph, edges):
-        assert all(graph[u][v]['pheromone'] == 0 for (u,v) in edges)
+        assert all(graph[u][v]['pheromone'] == 0 for (u, v) in edges)
 
     def test_is_complete_graph(self, graph):
-        assert list(graph[0].keys()) == [1,2]
-        assert list(graph[1].keys()) == [0,2]
-        assert list(graph[2].keys()) == [0,1]
-
-
-
+        assert list(graph[0].keys()) == [1, 2]
+        assert list(graph[1].keys()) == [0, 2]
+        assert list(graph[2].keys()) == [0, 1]
