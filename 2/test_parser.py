@@ -6,7 +6,7 @@ from IPython import embed
 class TestParser:
     @pytest.fixture
     def parser(self):
-        return ant_colony.Parser('test/test_graph.xml')
+        return ant_colony.Parser('test/test_graph')
 
     @pytest.fixture
     def nodes(self, parser):
@@ -43,5 +43,5 @@ class TestParser:
         assert list(graph[2].keys()) == [0, 1]
 
     def test_loads_optimal_solution(self, parser):
-        solution = parser.optimal_solution('test/test')
+        solution = parser.optimal_solution('test/test_graph')
         assert solution.edges() == [(0, 2), (1, 2)]

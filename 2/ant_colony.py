@@ -11,7 +11,7 @@ class Parser:
     def graph(self):
         if (self.__graph is None):
             self.__graph = nx.Graph()
-            tree = ET.parse("./%s" % self.location)
+            tree = ET.parse("./%s.xml" % self.location)
             vertices = tree.getroot().findall('.//vertex')
             for i in range(len(vertices)):
                 vertex = vertices[i]
