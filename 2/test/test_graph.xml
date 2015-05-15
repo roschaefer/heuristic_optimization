@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <travellingSalesmanProblemInstance>
 
-  <name>br17</name>
+  <name>Test</name>
 
   <source>TSPLIB</source>
 
-  <description>17 city problem (Repetto)</description>
+  <description>3 city problem</description>
 
   <doublePrecision>15</doublePrecision>
 
