@@ -33,3 +33,31 @@ class Parser:
                 edges = [(nodes[i], nodes[i+1]) for i in range(len(nodes)-1)]
                 self.__optimal_solution = nx.Graph(edges)
         return self.__optimal_solution
+
+
+class Solver(object):
+    def __init__(self, location):
+        parser = Parser(location)
+        self.optimal_solution = parser.optimal_solution(location)
+        self.problem = parser.graph()
+        self.RHO = 1.0/len(self.problem.nodes())
+        self.TAU_MIN = 1.0/len(self.problem.nodes())
+        self.TAU_MAX = 1-self.TAU_MIN
+
+    def find_optimum(self):
+        """
+        Intended to be the main interface method
+        """
+        pass
+
+    def construct(self, pheromones):
+        """
+        Generates a solution based on weights and current pheromone values
+        """
+        pass
+
+    def pheromone(self, edge):
+        if edge in self.optimal_solution:
+            return min((1 - self.RHO) * edge['pheromone'] + self.RHO, self.TAU_MAX)
+        else:
+            return max((1 - self.RHO) * edge['pheromone'], self.TAU_MIN)
