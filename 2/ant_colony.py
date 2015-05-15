@@ -15,7 +15,6 @@ class Parser:
             vertices = tree.getroot().findall('.//vertex')
             for i in range(len(vertices)):
                 vertex = vertices[i]
-                self.__graph.add_node(i)
                 edges = vertex.findall('.//edge')
                 for edge in edges:
                     self.__graph.add_edge(i, int(edge.text),
