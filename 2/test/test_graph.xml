@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<travellingSalesmanProblemInstance>
+
+  <name>br17</name>
+
+  <source>TSPLIB</source>
+
+  <description>17 city problem (Repetto)</description>
+
+  <doublePrecision>15</doublePrecision>
+
+  <ignoredDigits>5</ignoredDigits>
+
+  <graph>
+    <vertex>
+      <edge cost="8.300000000000000e+01">1</edge>
+      <edge cost="9.300000000000000e+01">2</edge>
+    </vertex>
+    <vertex>
+      <edge cost="8.300000000000e+01">0</edge>
+      <edge cost="4.000000000000000e+01">2</edge>
+    </vertex>
+    <vertex>
+      <edge cost="9.300000000000e+01">0</edge>
+      <edge cost="4.000000000000000e+01">1</edge>
+    </vertex>
+  </graph>
+
+</travellingSalesmanProblemInstance>
