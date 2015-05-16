@@ -29,7 +29,7 @@ class TestSolver:
         assert new_pheromone >= self.TAU_MIN
 
     def test_initial_pheromones(self, solver):
-        graph = solver.init_pheromones(solver.graph)
+        graph = solver.init_pheromones()
         assert graph.edge[0][1]['pheromone'] == 1/3.0
 
     def test_sets_initial_pheromones(self, solver):
