@@ -52,18 +52,17 @@ class Solver(object):
         """
         self.problem = self.init_pheromones(self.problem)
         self.best_known_solution = self.construct()
-        return self.best_known_solution
+        return self.best_known_solution.edges()
 
     def construct(self):
         """
         Generates a solution based on weights and current pheromone values
         """
-        result = []
-        n = len(self.graph.nodes())
+        path = nx.Graph()
+        n = self.graph.number_of_nodes()
         for i in range(n - 1):
-                edge = (i, i+1)
-                result.append(edge)
-        return result
+                path.add_edge(i, i+1)
+        return path
 
     def pheromone(self, edge):
         if edge in self.optimal_solution:

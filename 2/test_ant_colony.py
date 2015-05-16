@@ -35,6 +35,12 @@ class TestSolver:
         solver.find_optimum()
         assert solver.problem.edge[0][1]['pheromone'] == 1/3.0
 
-    def test_construct(self, solver):
-        assert solver.construct() == [(0,1), (1,2)]
+    def test_construct_number_of_edges(self, solver):
+        graph = solver.construct()
+        assert graph.number_of_edges() == 2 # not a round trip, so two edges for three nodes
 
+    def test_construct_incoming_outcoming_edges(self, solver):
+        graph = solver.construct()
+        assert graph.neighbors(0) == [1]
+        assert graph.neighbors(1) == [0,2]
+        assert graph.neighbors(2) == [1]
