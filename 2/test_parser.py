@@ -1,6 +1,7 @@
 import ant_colony
 import pytest
 from IPython import embed
+import networkx as nx
 
 
 class TestParser:
@@ -44,4 +45,5 @@ class TestParser:
 
     def test_loads_optimal_solution(self, parser):
         solution = parser.optimal_solution('test/test_graph')
-        assert solution.edges() == [(0, 2), (1, 0), (2, 1)]
+        expected = nx.Graph([(0, 2), (1, 0), (2, 1)])
+        assert nx.is_isomorphic(solution , expected)

@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import networkx as nx
 import collections
+import random
 
 
 class Parser:
@@ -33,7 +34,7 @@ class Parser:
                 nodes = [int(n.strip()) for n in nodes]
                 shifted_nodes = collections.deque(nodes)
                 shifted_nodes.rotate(1)
-                self.__optimal_solution = nx.DiGraph(zip(shifted_nodes, nodes))
+                self.__optimal_solution = nx.Graph(zip(shifted_nodes, nodes))
         return self.__optimal_solution
 
 
@@ -55,15 +56,23 @@ class Solver(object):
         self.best_known_solution = self.construct()
         self.update_pheromones()
         optimum = self.tsp(self.optimal_solution)
+        while (self.tsp(self.best_known_solution) > optimum):
+                new_path = self.construct()
+                if (self.tsp(new_path) > self.tsp(self.best_known_solution)):
+                        self.best_known_solution = new_path
+                self.update_pheromones()
         return self.best_known_solution.edges()
 
     def construct(self):
         """
         Generates a solution based on weights and current pheromone values
         """
-        shifted_nodes = collections.deque(self.graph.nodes())
+        nodes = self.graph.nodes().copy()
+        #random.shuffle(nodes)
+        print(nodes)
+        shifted_nodes = collections.deque(nodes)
         shifted_nodes.rotate(1)
-        path  = nx.DiGraph(zip(shifted_nodes, self.graph.nodes()))
+        path  = nx.Graph(zip(shifted_nodes, self.graph.nodes()))
         return path
 
     def tsp(self, path):

@@ -18,7 +18,11 @@ class TestSolver:
         return solver.graph.edge[0][1]
 
     def test_solves_until_optimum(self, solver):
-        assert solver.find_optimum() == [(0, 1), (1, 2), (2, 0)]
+        solver.find_optimum()
+        graph = solver.best_known_solution
+        expected =  nx.Graph( [(0, 1), (1, 2), (2, 0)])
+        assert nx.is_isomorphic(graph, expected)
+        #assert solver.find_optimum() == [(0, 1), (1, 2), (2, 0)]
 
     def test_pheromone_for_optimal_edge_up_to_max(self, solver, edge):
         new_pheromone = solver.pheromone(edge)
@@ -42,9 +46,9 @@ class TestSolver:
 
     def test_construct_round_trip(self, solver):
         graph = solver.construct()
-        neighbor = graph.neighbors(0)[0]
-        neighbor_of_neighbor = graph.neighbors(neighbor)[0]
-        assert graph.neighbors(neighbor_of_neighbor) == [0] # round trip
+        assert graph.neighbors(0) == [1,2]
+        assert graph.neighbors(1) == [0,2]
+        assert graph.neighbors(2) == [0,1]
 
     def test_tsp(self, solver):
         path = nx.Graph()
