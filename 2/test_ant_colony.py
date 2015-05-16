@@ -1,5 +1,6 @@
 import ant_colony
 import pytest
+import networkx as nx
 
 
 class TestSolver:
@@ -44,3 +45,10 @@ class TestSolver:
         assert graph.neighbors(0) == [1]
         assert graph.neighbors(1) == [0,2]
         assert graph.neighbors(2) == [1]
+
+    def test_tsp(self, solver):
+        path = nx.Graph()
+        path.add_edge(0,2)
+        path.add_edge(2,1)
+        expected = 93 + 40
+        assert solver.tsp(path) == expected

@@ -64,6 +64,12 @@ class Solver(object):
                 path.add_edge(i, i+1)
         return path
 
+    def tsp(self, path):
+        costs = 0
+        for u,v in path.edges():
+                costs += self.graph[u][v]['weight']
+        return costs
+
     def pheromone(self, edge):
         if edge in self.optimal_solution:
             return min((1 - self.RHO) * edge['pheromone'] + self.RHO, self.TAU_MAX)
