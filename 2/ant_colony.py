@@ -39,10 +39,9 @@ class Solver(object):
     def __init__(self, location):
         parser = Parser(location)
         self.optimal_solution = parser.optimal_solution(location)
-        self.problem = parser.graph()
         self.graph = parser.graph()
-        self.RHO = 1.0/len(self.problem.nodes())
-        self.TAU_MIN = 1.0/len(self.problem.nodes())
+        self.RHO = 1.0/len(self.graph.nodes())
+        self.TAU_MIN = 1.0/len(self.graph.nodes())
         self.TAU_MAX = 1-self.TAU_MIN
         self.best_known_solution = []
 
@@ -50,7 +49,7 @@ class Solver(object):
         """
         Intended to be the main interface method
         """
-        self.problem = self.init_pheromones(self.problem)
+        self.graph = self.init_pheromones(self.graph)
         self.best_known_solution = self.construct()
         return self.best_known_solution.edges()
 

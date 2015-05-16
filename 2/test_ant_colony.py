@@ -15,7 +15,7 @@ class TestSolver:
 
     @pytest.fixture
     def edge(self, solver):
-        return solver.problem.edge[0][1]
+        return solver.graph.edge[0][1]
 
     def test_solves_until_optimum(self, solver):
         assert solver.find_optimum() == [(0, 2), (2, 1)]
@@ -29,12 +29,12 @@ class TestSolver:
         assert new_pheromone >= self.TAU_MIN
 
     def test_initial_pheromones(self, solver):
-        graph = solver.init_pheromones(solver.problem)
+        graph = solver.init_pheromones(solver.graph)
         assert graph.edge[0][1]['pheromone'] == 1/3.0
 
     def test_sets_initial_pheromones(self, solver):
         solver.find_optimum()
-        assert solver.problem.edge[0][1]['pheromone'] == 1/3.0
+        assert solver.graph.edge[0][1]['pheromone'] == 1/3.0
 
     def test_construct_number_of_edges(self, solver):
         graph = solver.construct()
