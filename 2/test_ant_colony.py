@@ -18,7 +18,7 @@ class TestSolver:
         return solver.graph.edge[0][1]
 
     def test_solves_until_optimum(self, solver):
-        assert solver.find_optimum() == [(0, 2), (1, 0), (2, 1)]
+        assert solver.find_optimum() == [(0, 1), (1, 2), (2, 0)]
 
     def test_pheromone_for_optimal_edge_up_to_max(self, solver, edge):
         new_pheromone = solver.pheromone(edge)

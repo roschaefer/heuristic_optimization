@@ -31,8 +31,9 @@ class Parser:
                 lines = f.readlines()
                 nodes = lines[START_NODE_LIST:-2]
                 nodes = [int(n.strip()) for n in nodes]
-                edges = [(nodes[i], nodes[i+1]) for i in range(len(nodes)-1)]
-                self.__optimal_solution = nx.Graph(edges)
+                shifted_nodes = collections.deque(nodes)
+                shifted_nodes.rotate(1)
+                self.__optimal_solution = nx.DiGraph(zip(shifted_nodes, nodes))
         return self.__optimal_solution
 
 
@@ -53,17 +54,16 @@ class Solver(object):
         self.init_pheromones()
         self.best_known_solution = self.construct()
         self.update_pheromones()
+        optimum = self.tsp(self.optimal_solution)
         return self.best_known_solution.edges()
 
     def construct(self):
         """
         Generates a solution based on weights and current pheromone values
         """
-        path = nx.DiGraph()
         shifted_nodes = collections.deque(self.graph.nodes())
         shifted_nodes.rotate(1)
-        for u, v in zip(self.graph.nodes(), list(shifted_nodes)):
-                path.add_edge(u, v)
+        path  = nx.DiGraph(zip(shifted_nodes, self.graph.nodes()))
         return path
 
     def tsp(self, path):
