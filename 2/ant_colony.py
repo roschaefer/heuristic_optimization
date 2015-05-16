@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import networkx as nx
+import collections
 
 
 class Parser:
@@ -57,10 +58,11 @@ class Solver(object):
         """
         Generates a solution based on weights and current pheromone values
         """
-        path = nx.Graph()
-        n = self.graph.number_of_nodes()
-        for i in range(n - 1):
-                path.add_edge(i, i+1)
+        path = nx.DiGraph()
+        shifted_nodes = collections.deque(self.graph.nodes())
+        shifted_nodes.rotate(1)
+        for u, v in zip(self.graph.nodes(), list(shifted_nodes)):
+                path.add_edge(u, v)
         return path
 
     def tsp(self, path):
