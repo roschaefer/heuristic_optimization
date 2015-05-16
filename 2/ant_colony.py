@@ -40,21 +40,30 @@ class Solver(object):
         parser = Parser(location)
         self.optimal_solution = parser.optimal_solution(location)
         self.problem = parser.graph()
+        self.graph = parser.graph()
         self.RHO = 1.0/len(self.problem.nodes())
         self.TAU_MIN = 1.0/len(self.problem.nodes())
         self.TAU_MAX = 1-self.TAU_MIN
+        self.best_known_solution = []
 
     def find_optimum(self):
         """
         Intended to be the main interface method
         """
         self.problem = self.init_pheromones(self.problem)
+        self.best_known_solution = self.construct()
+        return self.best_known_solution
 
-    def construct(self, pheromones):
+    def construct(self):
         """
         Generates a solution based on weights and current pheromone values
         """
-        pass
+        result = []
+        n = len(self.graph.nodes())
+        for i in range(n - 1):
+                edge = (i, i+1)
+                result.append(edge)
+        return result
 
     def pheromone(self, edge):
         if edge in self.optimal_solution:
