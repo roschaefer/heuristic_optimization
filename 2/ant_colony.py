@@ -58,7 +58,7 @@ class Solver(object):
         optimum = self.tsp(self.optimal_solution)
         while (self.tsp(self.best_known_solution) > optimum):
                 new_path = self.construct()
-                if (self.tsp(new_path) > self.tsp(self.best_known_solution)):
+                if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
                         self.best_known_solution = new_path
                 self.update_pheromones()
         return self.best_known_solution.edges()
