@@ -50,7 +50,7 @@ class Solver(object):
         """
         Intended to be the main interface method
         """
-        self.graph = self.init_pheromones()
+        self.init_pheromones()
         self.best_known_solution = self.construct()
         return self.best_known_solution.edges()
 
@@ -79,7 +79,6 @@ class Solver(object):
 
     def init_pheromones(self):
         for (u, v) in self.graph.edges():
-            edge = self.graph[u][v]
-            edge['pheromone'] = self.pheromone(edge)
+            self.graph[u][v]['pheromone'] = 1.0/self.graph.number_of_nodes()
         return self.graph
 
