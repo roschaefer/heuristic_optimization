@@ -41,7 +41,7 @@ class Solver(object):
         parser = Parser(location)
         self.optimal_solution = parser.optimal_solution(location)
         self.graph = parser.graph()
-        self.RHO = 1.0/len(self.graph.nodes())
+        self.RHO = 1.0/self.graph.number_of_nodes()
         self.TAU_MIN = 1.0/len(self.graph.nodes())
         self.TAU_MAX = 1-self.TAU_MIN
         self.best_known_solution = []
@@ -52,6 +52,7 @@ class Solver(object):
         """
         self.init_pheromones()
         self.best_known_solution = self.construct()
+        self.update_pheromones()
         return self.best_known_solution.edges()
 
     def construct(self):
@@ -72,13 +73,17 @@ class Solver(object):
         return costs
 
     def pheromone(self, edge):
-        if edge in self.optimal_solution:
+        if edge in self.best_known_solution:
             return min((1 - self.RHO) * edge['pheromone'] + self.RHO, self.TAU_MAX)
         else:
             return max((1 - self.RHO) * edge['pheromone'], self.TAU_MIN)
 
     def init_pheromones(self):
         for (u, v) in self.graph.edges():
-            self.graph[u][v]['pheromone'] = 1.0/self.graph.number_of_nodes()
+            self.graph[u][v]['pheromone'] = self.RHO
         return self.graph
+
+    def update_pheromones(self):
+        for u,v in self.graph.edges():
+                self.graph[u][v]['pheromone'] = self.pheromone(self.graph[u][v])
 
