@@ -76,7 +76,7 @@ class Solver(object):
         last_node = first_node
         remaining_nodes.remove(last_node)
         while (len(remaining_nodes) != 0):
-                node = self.pick_a_node(remaining_nodes)
+                node = self.pick_a_node(last_node, remaining_nodes)
                 path.add_edge(last_node, node)
                 remaining_nodes.remove(node)
                 last_node = node
@@ -109,18 +109,22 @@ class Solver(object):
         other_nodes = self.graph.nodes().copy()
         other_nodes.remove(node)
         for n in other_nodes:
-                tau = self.pheromone(self.graph[node][n])
-                w = self.graph[node][n]['weight']
-                r += math.pow(tau, self.ALPHA)*math.pow(w, - self.BETA)
+                r += self.small_r(node, n)
         return r
 
-    def pick_a_node(self, remaining_nodes):
+    def small_r(self, node, other_node):
+        tau = self.pheromone(self.graph[node][other_node])
+        w = self.graph[node][other_node]['weight']
+        return math.pow(tau, self.ALPHA)*math.pow(w, - self.BETA)
+
+    def pick_a_node(self, last_node, remaining_nodes):
         choices = {}
         for n in remaining_nodes:
-                choices[n] = 1.0
-        print(choices)
+                probability = self.small_r(last_node, n)/self.big_R(last_node)
+                choices[n] = probability
         return self.weighted_choice(choices)
 
+    # source: http://stackoverflow.com/questions/3679694/a-weighted-version-of-random-choice
     def weighted_choice(self, choices):
         total = sum(choices.values())
         r = random.uniform(0, total)
