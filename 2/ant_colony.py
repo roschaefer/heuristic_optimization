@@ -70,11 +70,17 @@ class Solver(object):
         """
         Generates a solution based on weights and current pheromone values
         """
-        nodes = self.graph.nodes().copy()
-        random.shuffle(nodes)
-        shifted_nodes = collections.deque(nodes)
-        shifted_nodes.rotate(1)
-        path  = nx.Graph(zip(shifted_nodes, nodes))
+        path  = nx.Graph()
+        remaining_nodes = self.graph.nodes().copy()
+        first_node = self.graph.nodes()[0]
+        last_node = first_node
+        remaining_nodes.remove(last_node)
+        while (len(remaining_nodes) != 0):
+                node = self.pick_a_node(remaining_nodes)
+                path.add_edge(last_node, node)
+                remaining_nodes.remove(node)
+                last_node = node
+        path.add_edge(last_node, first_node) # close the loop
         return path
 
     def tsp(self, path):
@@ -107,3 +113,6 @@ class Solver(object):
                 w = self.graph[node][n]['weight']
                 r += math.pow(tau, self.ALPHA)*math.pow(w, - self.BETA)
         return r
+
+    def pick_a_node(self, remaining_nodes):
+        return random.choice(remaining_nodes)
