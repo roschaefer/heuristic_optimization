@@ -88,7 +88,7 @@ class Solver(object):
 
     def init_pheromones(self):
         for (u, v) in self.graph.edges():
-            self.graph[u][v]['pheromone'] = self.RHO
+            self.graph[u][v]['pheromone'] = 1.0/self.graph.number_of_nodes()
         return self.graph
 
     def update_pheromones(self):
