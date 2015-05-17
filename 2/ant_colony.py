@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import networkx as nx
 import collections
 import random
+import math
 
 
 class Parser:
@@ -46,6 +47,8 @@ class Solver(object):
         self.RHO = 1.0/self.graph.number_of_nodes()
         self.TAU_MIN = 1.0/len(self.graph.nodes())
         self.TAU_MAX = 1-self.TAU_MIN
+        self.ALPHA   = 1
+        self.BETA    = 0
         self.best_known_solution = []
 
     def find_optimum(self):
@@ -95,3 +98,12 @@ class Solver(object):
         for u,v in self.graph.edges():
                 self.graph[u][v]['pheromone'] = self.pheromone(self.graph[u][v])
 
+    def big_R(self, node):
+        r = 0
+        other_nodes = self.graph.nodes().copy()
+        other_nodes.remove(node)
+        for n in other_nodes:
+                tau = self.pheromone(self.graph[node][n])
+                w = self.graph[node][n]['weight']
+                r += math.pow(tau, self.ALPHA)*math.pow(w, - self.BETA)
+        return r

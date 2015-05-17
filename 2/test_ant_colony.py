@@ -57,3 +57,4 @@ class TestSolver:
         path.add_edge(1,0)
         expected = 93 + 40 + 83
         assert solver.tsp(path) == expected
+

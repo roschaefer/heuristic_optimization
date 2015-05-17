@@ -23,3 +23,10 @@ class TestSolver:
         assert optimal_path == expected.edges()
         assert solver.tsp(solver.best_known_solution) == 4
 
+    def test_big_R(self, solver):
+        solver.init_pheromones()
+        solver.ALPHA = 1
+        solver.BETA  = -1
+        expected = (1.0 + 1.0 + 4.0)/4.0 # sum of costs = 6, number of nodes = 4
+        assert solver.big_R(0) == expected
+
