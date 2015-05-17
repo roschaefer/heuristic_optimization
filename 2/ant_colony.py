@@ -115,4 +115,18 @@ class Solver(object):
         return r
 
     def pick_a_node(self, remaining_nodes):
-        return random.choice(remaining_nodes)
+        choices = {}
+        for n in remaining_nodes:
+                choices[n] = 1.0
+        print(choices)
+        return self.weighted_choice(choices)
+
+    def weighted_choice(self, choices):
+        total = sum(choices.values())
+        r = random.uniform(0, total)
+        upto = 0
+        for c, w in choices.items():
+           if upto + w > r:
+              return c
+           upto += w
+        assert False, "Shouldn't get here"
