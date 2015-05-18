@@ -84,10 +84,7 @@ class Solver(object):
         return path
 
     def tsp(self, path):
-        costs = 0
-        for u,v in path.edges():
-                costs += self.graph[u][v]['weight']
-        return costs
+        return sum([self.graph[u][v]['weight'] for u,v in path.edges()])
 
     def pheromone(self, edge):
         if edge in self.best_known_solution:
@@ -105,12 +102,7 @@ class Solver(object):
                 self.graph[u][v]['pheromone'] = self.pheromone(self.graph[u][v])
 
     def big_R(self, node):
-        r = 0
-        other_nodes = self.graph.nodes().copy()
-        other_nodes.remove(node)
-        for n in other_nodes:
-                r += self.small_r(node, n)
-        return r
+        return sum([self.small_r(node, n) for n in self.graph.neighbors(node)])
 
     def small_r(self, node, other_node):
         tau = self.pheromone(self.graph[node][other_node])
