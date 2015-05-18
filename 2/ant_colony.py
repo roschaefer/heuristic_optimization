@@ -73,14 +73,14 @@ class Solver(object):
         path  = nx.Graph()
         remaining_nodes = self.graph.nodes().copy()
         first_node = self.graph.nodes()[0]
-        last_node = first_node
-        remaining_nodes.remove(last_node)
+        current_node = first_node
+        remaining_nodes.remove(current_node)
         while (len(remaining_nodes) != 0):
-                node = self.pick_a_node(last_node, remaining_nodes)
-                path.add_edge(last_node, node)
+                node = self.pick_a_node(current_node, remaining_nodes)
+                path.add_edge(current_node, node)
                 remaining_nodes.remove(node)
-                last_node = node
-        path.add_edge(last_node, first_node) # close the loop
+                current_node = node
+        path.add_edge(current_node, first_node) # close the loop
         return path
 
     def tsp(self, path):
@@ -117,10 +117,10 @@ class Solver(object):
         w = self.graph[node][other_node]['weight']
         return math.pow(tau, self.ALPHA)*math.pow(w, - self.BETA)
 
-    def pick_a_node(self, last_node, remaining_nodes):
+    def pick_a_node(self, current_node, remaining_nodes):
         choices = {}
         for n in remaining_nodes:
-                probability = self.small_r(last_node, n)/self.big_R(last_node)
+                probability = self.small_r(current_node, n)/self.big_R(current_node)
                 choices[n] = probability
         return self.weighted_choice(choices)
 
