@@ -64,12 +64,12 @@ class Solver(object):
         self.update_pheromones()
         iterations = 0
         while (self.tsp(self.best_known_solution) > self.optimum):
+                iterations = iterations + 1
                 new_path = self.construct()
                 if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
                         self.best_known_solution = new_path
-                        print(self.tsp(self.best_known_solution))
+                        print(self.tsp(self.best_known_solution), iterations)
                 self.update_pheromones()
-                iterations = iterations + 1
         return (self.best_known_solution.edges(), iterations)
 
     def construct(self):
