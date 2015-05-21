@@ -18,7 +18,7 @@ class TestSolver:
         return solver.graph.edge[0][1]
 
     def test_find_optimum_terminates(self, solver):
-        optimal_path = solver.find_optimum()
+        optimal_path, _ = solver.find_optimum()
         expected = nx.Graph([(0,1),(1,3), (3,2), (2,0)])
         assert optimal_path == expected.edges()
         assert solver.tsp(solver.best_known_solution) == 4

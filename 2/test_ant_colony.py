@@ -62,3 +62,7 @@ class TestSolver:
         OPTIMUM = 600
         solver = ant_colony.Solver(self.TEST_PROBLEM, OPTIMUM)
         assert solver.optimum == OPTIMUM
+
+    def test_returns_no_of_iterations(self, solver):
+        (_, iterations) = solver.find_optimum()
+        assert iterations == 0
