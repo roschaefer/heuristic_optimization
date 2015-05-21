@@ -29,4 +29,3 @@ class TestSolver:
         solver.BETA  = -1
         expected = (1.0 + 1.0 + 4.0)/4.0 # sum of costs = 6, number of nodes = 4
         assert solver.big_R(0) == expected
-

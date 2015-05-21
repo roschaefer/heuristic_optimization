@@ -58,3 +58,7 @@ class TestSolver:
         expected = 93 + 40 + 83
         assert solver.tsp(path) == expected
 
+    def test_construct_with_cost_of_optimal_solution(self):
+        OPTIMUM = 600
+        solver = ant_colony.Solver(self.TEST_PROBLEM, OPTIMUM)
+        assert solver.optimum == OPTIMUM

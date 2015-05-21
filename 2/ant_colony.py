@@ -40,9 +40,8 @@ class Parser:
 
 
 class Solver(object):
-    def __init__(self, location):
+    def __init__(self, location, optimum=None):
         parser = Parser(location)
-        self.optimal_solution = parser.optimal_solution(location)
         self.graph = parser.graph()
         self.RHO = 1.0/self.graph.number_of_nodes()
         self.TAU_MIN = 1.0/len(self.graph.nodes())
@@ -50,6 +49,11 @@ class Solver(object):
         self.ALPHA   = 1
         self.BETA    = 0
         self.best_known_solution = []
+        if optimum is None:
+            optimal_path = parser.optimal_solution(location)
+            self.optimum = self.tsp(optimal_path)
+        else:
+            self.optimum = optimum
 
     def find_optimum(self):
         """
@@ -58,8 +62,7 @@ class Solver(object):
         self.init_pheromones()
         self.best_known_solution = self.construct()
         self.update_pheromones()
-        optimum = self.tsp(self.optimal_solution)
-        while (self.tsp(self.best_known_solution) > optimum):
+        while (self.tsp(self.best_known_solution) > self.optimum):
                 new_path = self.construct()
                 if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
                         self.best_known_solution = new_path
