@@ -142,5 +142,5 @@ class Solver(object):
 
     def log(self, msg):
         filename = "results/log_RHO-%.3f_ALPHA-%.3f_BETA-%.3f.txt" % (self.RHO, self.ALPHA, self.BETA)
-        with open(filename, "w") as f:
-            f.write(msg)
+        with open(filename, "a") as f:
+            f.write(msg + "\n")
