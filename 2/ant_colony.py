@@ -3,6 +3,7 @@ import networkx as nx
 import collections
 import random
 import math
+import time
 
 
 class Parser:
@@ -40,14 +41,17 @@ class Parser:
 
 
 class Solver(object):
-    def __init__(self, location, optimum=None):
+    def __init__(self, location, optimum=None, RHO=None, ALPHA=1, BETA=0):
         parser = Parser(location)
         self.graph = parser.graph()
-        self.RHO = 1.0/self.graph.number_of_nodes()
+        if RHO is None:
+            self.RHO = 1.0/self.graph.number_of_nodes()
+        else:
+            self.RHO = RHO
         self.TAU_MIN = 1.0/len(self.graph.nodes())
         self.TAU_MAX = 1-self.TAU_MIN
-        self.ALPHA   = 1
-        self.BETA    = 0
+        self.ALPHA   = ALPHA
+        self.BETA    = BETA
         self.best_known_solution = []
         if optimum is None:
             optimal_path = parser.optimal_solution(location)
@@ -63,12 +67,15 @@ class Solver(object):
         self.best_known_solution = self.construct()
         self.update_pheromones()
         iterations = 0
-        while (self.tsp(self.best_known_solution) > self.optimum):
+        self.log("Cost" + "   Iterations")
+        self.log("%i    %i" % (self.tsp(self.best_known_solution), iterations))
+        t0 = time.time()
+        while (self.tsp(self.best_known_solution) > self.optimum) and time.time()-t0 < 10*60:
                 iterations = iterations + 1
                 new_path = self.construct()
                 if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
                         self.best_known_solution = new_path
-                        print(self.tsp(self.best_known_solution), iterations)
+                        self.log("%i    %i" % (self.tsp(self.best_known_solution), iterations))
                 self.update_pheromones()
         return (self.best_known_solution.edges(), iterations)
 
@@ -132,3 +139,8 @@ class Solver(object):
               return c
            upto += w
         assert False, "Shouldn't get here"
+
+    def log(self, msg):
+        filename = "results/log_RHO-%.3f_ALPHA-%.3f_BETA-%.3f.txt" % (self.RHO, self.ALPHA, self.BETA)
+        with open(filename, "w") as f:
+            f.write(msg)
