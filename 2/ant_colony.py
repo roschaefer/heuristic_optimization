@@ -67,15 +67,15 @@ class Solver(object):
         self.best_known_solution = self.construct()
         self.update_pheromones()
         iterations = 0
-        self.log("Cost" + "   Iterations")
-        self.log("%i    %i" % (self.tsp(self.best_known_solution), iterations))
+        self.log("Time     Cost   Iterations")
         t0 = time.time()
+        self.log("%i    %i    %i" % (time.time()-t0, self.tsp(self.best_known_solution), iterations))
         while (self.tsp(self.best_known_solution) > self.optimum) and time.time()-t0 < 10*60:
                 iterations = iterations + 1
                 new_path = self.construct()
                 if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
                         self.best_known_solution = new_path
-                        self.log("%i    %i" % (self.tsp(self.best_known_solution), iterations))
+                        self.log("%i    %i    %i" % (time.time()-t0, self.tsp(self.best_known_solution), iterations))
                 self.update_pheromones()
         return (self.best_known_solution.edges(), iterations)
 
