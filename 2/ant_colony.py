@@ -147,7 +147,7 @@ class Solver(object):
 
     def create_logfile(self, location):
         parameters = "RHO-%.3f_ALPHA-%.3f_BETA-%.3f" % (self.RHO, self.ALPHA, self.BETA)
-        folder = "results/%s_%s" % (location, parameters)
+        folder = "results2/%s_%s" % (location, parameters)
         if not os.path.exists(folder):
             os.makedirs(folder)
         iteration = len(os.listdir(folder))
