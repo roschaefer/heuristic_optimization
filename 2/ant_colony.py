@@ -135,9 +135,9 @@ class Solver(object):
         r = random.uniform(0, total)
         upto = 0
         for c, w in choices.items():
-           if upto + w > r:
-              return c
-           upto += w
+            if upto + w > r:
+                return c
+            upto += w
         assert False, "Shouldn't get here"
 
     def log(self, msg):
