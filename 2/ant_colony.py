@@ -89,7 +89,7 @@ class Solver(object):
         Generates a solution based on weights and current pheromone values
         """
         path  = nx.Graph()
-        remaining_nodes = self.graph.nodes().copy()
+        remaining_nodes = list(self.graph.nodes())
         first_node = self.graph.nodes()[0]
         current_node = first_node
         remaining_nodes.remove(current_node)
