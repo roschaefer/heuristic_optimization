@@ -1,3 +1,4 @@
+import contextlib
 from multiprocessing import Pool
 import ant_colony
 
@@ -8,7 +9,7 @@ def run(args):
 
 if __name__ == '__main__':
 
-    with Pool(processes=4) as pool:
+    with contextlib.closing(Pool(processes=4)) as pool:
         print(pool.map(run, 10 * [
             #        optimum, RHO,  ALPHA, BETA
             ('gr17', 2085,    0.99,   1,   0),
