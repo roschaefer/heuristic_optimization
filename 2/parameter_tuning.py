@@ -29,23 +29,3 @@ if __name__ == '__main__':
             ('gr17', 2085,    0.8,    4,   0),
             ('gr17', 2085,    0.8,    8,   0),
         ]))
-
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.99, ALPHA=1, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.9, ALPHA=1, BETA=2).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=1, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.7, ALPHA=1, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.5, ALPHA=1, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.1, ALPHA=1, BETA=0).find_optimum()
-
-
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=1, BETA=1).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=1, BETA=2).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=1, BETA=4).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=1, BETA=8).find_optimum()
-
-
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=0, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=1, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=2, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=4, BETA=0).find_optimum()
-    # ant_colony.Solver('gr17', optimum=2085, RHO=0.8, ALPHA=8, BETA=0).find_optimum()
