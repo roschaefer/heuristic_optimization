@@ -149,7 +149,7 @@ class Solver(object):
         parameters = "RHO-%.3f_ALPHA-%.3f_BETA-%.3f" % (self.RHO, self.ALPHA, self.BETA)
         folder = "results/%s_%s" % (location, parameters)
         if not os.path.exists(folder):
-            os.mkdir(folder)
+            os.makedirs(folder)
         iteration = len(os.listdir(folder))
         self.filename = "%s/%s.txt" % (folder, iteration)
 
