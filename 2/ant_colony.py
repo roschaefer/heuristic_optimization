@@ -71,13 +71,15 @@ class Solver(object):
         self.update_pheromones()
         iterations = 0
         self.t0 = time.time()
-        self.log(iterations),
-        while (self.tsp(self.best_known_solution) > self.optimum) and time.time()-self.t0 < 10*60:
+        best_cost = self.tsp(self.best_known_solution)
+        self.log(best_cost, iterations),
+        while (best_cost > self.optimum) and time.time()-self.t0 < 10*60:
                 iterations = iterations + 1
                 new_path = self.construct()
-                if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
+                if (self.tsp(new_path) < best_cost):
                         self.best_known_solution = new_path
-                        self.log(iterations)
+                        best_cost = self.tsp(self.best_known_solution)
+                        self.log(best_cost, iterations)
                 self.update_pheromones()
         return (self.best_known_solution.edges(), iterations)
 
@@ -150,7 +152,7 @@ class Solver(object):
         iteration = len(os.listdir(folder))
         self.filename = "%s/%s.txt" % (folder, iteration)
 
-    def log(self, iterations):
+    def log(self, best_cost, iterations):
         with open(self.filename, "a") as f:
-            row = (time.time()-self.t0, self.tsp(self.best_known_solution), iterations)
+            row = (time.time()-self.t0, best_cost, iterations)
             csv.writer(f).writerow([int(x) for x in row])
