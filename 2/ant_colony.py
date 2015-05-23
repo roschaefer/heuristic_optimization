@@ -74,7 +74,7 @@ class Solver(object):
         best_cost = self.tsp(self.best_known_solution)
         self.log(best_cost, iterations)
         PRECISION = 1.05
-        while (best_cost >  PRECISION * self.optimum) and time.time()-self.t0 < 10*60:
+        while (best_cost > PRECISION * self.optimum) and time.time()-self.t0 < 10*60:
                 iterations = iterations + 1
                 new_path = self.construct()
                 if (self.tsp(new_path) < best_cost):
