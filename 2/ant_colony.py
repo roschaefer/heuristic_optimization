@@ -4,6 +4,8 @@ import collections
 import random
 import math
 import time
+import csv
+import os
 
 
 class Parser:
@@ -58,6 +60,7 @@ class Solver(object):
             self.optimum = self.tsp(optimal_path)
         else:
             self.optimum = optimum
+        self.create_logfile(location)
 
     def find_optimum(self):
         """
@@ -67,15 +70,14 @@ class Solver(object):
         self.best_known_solution = self.construct()
         self.update_pheromones()
         iterations = 0
-        self.log("Time     Cost   Iterations")
-        t0 = time.time()
-        self.log("%i    %i    %i" % (time.time()-t0, self.tsp(self.best_known_solution), iterations))
-        while (self.tsp(self.best_known_solution) > self.optimum) and time.time()-t0 < 10*60:
+        self.t0 = time.time()
+        self.log(iterations),
+        while (self.tsp(self.best_known_solution) > self.optimum) and time.time()-self.t0 < 10*60:
                 iterations = iterations + 1
                 new_path = self.construct()
                 if (self.tsp(new_path) < self.tsp(self.best_known_solution)):
                         self.best_known_solution = new_path
-                        self.log("%i    %i    %i" % (time.time()-t0, self.tsp(self.best_known_solution), iterations))
+                        self.log(iterations)
                 self.update_pheromones()
         return (self.best_known_solution.edges(), iterations)
 
@@ -140,7 +142,15 @@ class Solver(object):
             upto += w
         assert False, "Shouldn't get here"
 
-    def log(self, msg):
-        filename = "results/log_RHO-%.3f_ALPHA-%.3f_BETA-%.3f.txt" % (self.RHO, self.ALPHA, self.BETA)
-        with open(filename, "a") as f:
-            f.write(msg + "\n")
+    def create_logfile(self, location):
+        parameters = "RHO-%.3f_ALPHA-%.3f_BETA-%.3f" % (self.RHO, self.ALPHA, self.BETA)
+        folder = "results/%s_%s" % (location, parameters)
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+        iteration = len(os.listdir(folder))
+        self.filename = "%s/%s.txt" % (folder, iteration)
+
+    def log(self, iterations):
+        with open(self.filename, "a") as f:
+            row = (time.time()-self.t0, self.tsp(self.best_known_solution), iterations)
+            csv.writer(f).writerow([int(x) for x in row])
