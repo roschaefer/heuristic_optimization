@@ -38,11 +38,10 @@ dirs <- list.dirs("results2")
 
 # for(dir in dirs) {
 	dir <- "results2/gr17_RHO-0.100_ALPHA-0.100_BETA-8.000"
+	pdf(sprintf("%s/plot.pdf", dir)
 	allForParams <- data.frame()
 	files <- list.files(dir)
 	group <- 0
-	plot(1, ylim=c(0, 20000), xlim=c(0,3))
-
 	for(f in files) {
 		x <- data.frame()
 		x <- read.csv(sprintf("%s/%s", dir,f), header=F)
@@ -58,6 +57,7 @@ dirs <- list.dirs("results2")
 	lines(means$V1, means$V2, lwd=2, type="l", col="black")
 	# draw axis showing buckets
 	axis(3, means$V1, labels=F)
+	dev.off()
 
 
 # }
