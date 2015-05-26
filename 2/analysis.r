@@ -29,25 +29,30 @@ normalize <- function(y, optimum) {
 	y <-  100 * y / optimum - 100
 }
 
-plotCurve <- function(Data, xlim=400000, ylim=300) {
+plotCurve <- function(Data, xlim=500000, ylim=250) {
 	plot(Data$V1, Data$V2, pch = 1, ylim=c(0, ylim), xlim=c(0, xlim), col=rainbow(10)[Data$group],
 		ylab="Deviation in %", xlab="Iterations")
 }
 
-dirs <- list.dirs("results2")
+ROOT_DIR <- "results2"
+dirs <- list.dirs(ROOT_DIR)
 
-# for(dir in dirs) {
-	dir <- "results2/gr17_RHO-0.100_ALPHA-0.100_BETA-8.000"
-	pdf(sprintf("%s/plot.pdf", dir)
+for(d in 2:length(dirs)) {
+	dir <- dirs[d]
+	if(grepl("fri26", dir)) {
+		optimum <- 937
+	}
+	else if (grepl("gr17", dir)) {
+		optimum <- 2085
+	}
+	pdf(sprintf("%s/plot.pdf", dir))
 	allForParams <- data.frame()
-	files <- list.files(dir)
+	files <- list.files(dir, pattern="*.txt")
 	group <- 0
 	for(f in files) {
-		x <- data.frame()
 		x <- read.csv(sprintf("%s/%s", dir,f), header=F)
-		colnames(x) <- c("seconds", "V2", "V1")
-		x <- x[c("V1", "V2")]
-		x$V2<-normalize(x$V2, 2085)
+		x <- data.frame(V1=x$V3, V2=x$V2)
+		x$V2<-normalize(x$V2, optimum)
 		x$group <- group
 		group <- group + 1
 		allForParams <- rbind(x, allForParams)
@@ -60,4 +65,4 @@ dirs <- list.dirs("results2")
 	dev.off()
 
 
-# }
+}
