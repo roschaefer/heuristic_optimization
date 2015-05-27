@@ -45,7 +45,9 @@ for(d in 2:length(dirs)) {
 	else if (grepl("gr17", dir)) {
 		optimum <- 2085
 	}
-	pdf(sprintf("%s/plot.pdf", dir))
+	# pdf(sprintf("%s/plot.pdf", dir))
+	png(sprintf("%s/plot.png", dir))
+
 	allForParams <- data.frame()
 	files <- list.files(dir, pattern="*.txt")
 	group <- 0
