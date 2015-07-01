@@ -30,21 +30,23 @@ normalize <- function(y, optimum) {
 }
 
 plotCurve <- function(Data, xlim=500000, ylim=250) {
-	plot(Data$V1, Data$V2, pch = 1, ylim=c(0, ylim), xlim=c(0, xlim), col=rainbow(10)[Data$group],
+	plot(Data$V1, Data$V2, pch = 1, col=rainbow(10)[Data$group],
 		ylab="Deviation in %", xlab="Iterations")
 }
 
 ROOT_DIR <- "results2"
 dirs <- list.dirs(ROOT_DIR)
 
-for(d in 2:length(dirs)) {
-	dir <- dirs[d]
+for(d in 1) {
+	#dir <- dirs[d]
 	if(grepl("fri26", dir)) {
 		optimum <- 937
 	}
 	else if (grepl("gr17", dir)) {
 		optimum <- 2085
 	}
+	optimum <- 1273
+	dir <- "results2/_swiss42_RHO-0.100_ALPHA-0.100_BETA-8.000"
 	# pdf(sprintf("%s/plot.pdf", dir))
 	png(sprintf("%s/plot.png", dir))
 
