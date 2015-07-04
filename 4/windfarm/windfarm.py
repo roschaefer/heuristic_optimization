@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import optunity
+import math
+import operator
 from IPython import embed
 import subprocess
 from random import randint
-
-def points():
-    return  [(randint(0,10000),randint(0,10000)) for _ in range(100)]
 
 def points_formatted(points):
     return '\n'.join([' '.join(map(str,p)) for p in points])
@@ -36,22 +35,32 @@ def bound_box_constraint(points):
         return True
 
 def security_distance_constraint(points):
-    for x1,y1 in points:
-        for x2,y2 in points:
-            if ((x1-x2)**2 + (y1-y2)**2) >= 308:
+    for i in range(len(points)):
+        x1, y1 = points[i]
+        for x2,y2 in points[i+1:]:
+            if (math.sqrt((x1-x2)**2 + (y1-y2)**2)) < 308:
                 return False
     return True
 
-def good_points():
-    pos = points()
-    while not (bound_box_constraint(pos) and security_distance_constraint(pos)):
-        pos = points()
-    return pos
-
-def costs():
-    print_points(points())
+def costs(points):
+    print_points(points)
     ps = subprocess.Popen(("cat", "optimized.dat"), stdout=subprocess.PIPE)
     costs = subprocess.check_output(("./fcost"), stdin=ps.stdout)
     return float(costs)
 
+def read_points():
+    with open ("initial.dat", "r") as myfile:
+        data=myfile.readlines()
+    points = list()
+    for line in data[1:]:
+        points.append(tuple(map(int, line.split())))
+    return points
+
+
+def modify(points):
+        points = points.copy()
+        index = randint(0, len(points)-1)
+        delta = (randint(-3,3), randint(-3,3))
+        points[index] = tuple(map(operator.add, points[index], delta))
+        return points
 embed()
