@@ -10,11 +10,11 @@
 %
 % Note:
 % The \lipsum[#] commands throughout this template generate dummy text
-% to fill the template out. These commands should all be removed when 
+% to fill the template out. These commands should all be removed when
 % writing assignment content.
 %
 % This template uses a Perl script as an example snippet of code, most other
-% languages are also usable. Configure them in the "CODE INCLUSION 
+% languages are also usable. Configure them in the "CODE INCLUSION
 % CONFIGURATION" section.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,6 +34,8 @@
 \usepackage{courier} % Required for the courier font
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
 \usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsmath}
 
 % Margins
 \topmargin=-0.45in
@@ -69,7 +71,7 @@
         keywordstyle=[1]\color{Blue}\bf, % Perl functions bold and blue
         keywordstyle=[2]\color{Purple}, % Perl function arguments purple
         keywordstyle=[3]\color{Blue}\underbar, % Custom functions underlined and blue
-        identifierstyle=, % Nothing special about identifiers                                         
+        identifierstyle=, % Nothing special about identifiers
         commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small, % Comments small dark green courier font
         stringstyle=\color{Purple}, % Strings are purple
         showstringspaces=false, % Don't put marks in string spaces
@@ -182,41 +184,42 @@
 % To have just one problem per page, simply put a \clearpage after each problem
 \section{Sudoku}
 
-We modeled the sudoku problem with an Solver for Answer Set Programming.
-We used the implementation of the Potassco Suite, provided by the university of Potsdam \url{http://potassco.sourceforge.net/}.
-
-ASP (``Answer-Set-Solving'') is a form of declarative programming.
-It is based on the stable model (answer set) semantics of logic programming.
-
-
-
+We modeled the sudoku problem with a solver for Answer Set Programming, a declarative programming model complex combinatorial problems in NP, such as satisfiability.
+We used the implementation of the Potassco Suite, provided by the University of Potsdam \url{http://potassco.sourceforge.net/}.
 
 The usual programming model is to generate the solution space and filter invalid solutions with constraints.
-The relevant part of the code is:
+The relevant part of our code is listed below.
 
 \begin{verbatim}
+% first row
+initial(2,2,10).
+initial(3,3,15).
+%... and so on
 
+% a valid solution has to include the initial values
 sudoku(X,Y,N) :- initial(X,Y,N).
 
+% range constraints for coordinates and numbers
 1 { sudoku(1..16,Y,N) } 1 :- Y=1..16, N=1..16.
 1 { sudoku(X,1..16,N) } 1 :- X=1..16, N=1..16.
 1 { sudoku(X,Y,1..16) } 1 :- X=1..16, Y=1..16.
 
+% N must not appear twice in a row, column and 4x4 square
 :- sudoku(X1,Y1,N), sudoku(X2,Y2,N), (X1,Y1) != (X2,Y2),
 (((X1-1)/4),((Y1-1)/4)) == (((X2-1)/4), ((Y2-1)/4)).
 
 \end{verbatim}
 
-
 The sudoku is modeled as a list of vectors with 3 elements respectively.
 The first two elements correspond to the X and Y coordinate and the third element corresponds to the number N in the field.
 
-The initial configuration \texttt{initial(X,Y,N)} ensures, that a \texttt{sudoku} term is generated with the given values.
-We generate for every permutation of row (Y) and number (N) exactly one \texttt{sudoku(X,Y,N)} term, such that the chosen column(X) lies between 1 and 16.
-Similarily, we permutate column and number to find a row(Y) and we permutate column and row to find a number(N).
-For the last constraint, we take two \texttt{sudoku} terms and compare if they are distinct, if their numbers are the same and if their coordinates lie in the same grid cell.
-In this case the two \texttt{sudoku} terms lie in the same 4x4 grid cell, which violates a constraint of the puzzle, and we reject this solution.
+The initial configuration \texttt{initial(X,Y,N)} ensures, that a \texttt{sudoku} term is generated with the given values in the assignment. As an example the first row is given in the code listing.
+Then, the solver generates for every permutation of row (Y) and number (N) exactly one \texttt{sudoku(X,Y,N)} term, such that the chosen column(X) lies in $[1, 16]$.
+Similarily, the solver permutates the column and number to find a row(Y) and permutates column and row to find a number(N), which also have to be in the range of $[1, 16]$.
 
+The last constraint specifies that for two pairs of coordinates (X1, Y1) and (Y1, Y2), that (i) share the same number N, the coordinates have to be (ii) distinct if they lie in the same 4x4 square.
+
+This implementation was able to find \textbf{\textless N\textgreater} valid sudoku solutions in \textbf{\textless M\textgreater} seconds. Therefore we conclude that the ASP solver is a well-suited technique to solve the given problem, due to its combinatorial characteristics.
 
 
 
@@ -228,7 +231,7 @@ In this case the two \texttt{sudoku} terms lie in the same 4x4 grid cell, which 
 We started to implement random local search and terminate when we encounter the first improvement.
 We always continue with the new configuration if it is at least as good as the old configuration.
 We modify a random point with a random delta between $[-3,3] \in \mathbb{Z}$.
-With a little luck we find a ``better'' solution after 20000 iterations.
+During three test runs we found a With a little luck we find a ``better'' solution after 20000 iterations.
 
 \subsection{Discussion}
 The improvements were poor, e.g.\ an improvement of 0.000003.
