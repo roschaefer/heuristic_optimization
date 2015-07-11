@@ -33,6 +33,7 @@
 \usepackage{listings} % Required for insertion of code
 \usepackage{courier} % Required for the courier font
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{hyperref}
 
 % Margins
 \topmargin=-0.45in
@@ -181,25 +182,69 @@
 % To have just one problem per page, simply put a \clearpage after each problem
 \section{Sudoku}
 
+We modeled the sudoku problem with an Solver for Answer Set Programming.
+We used the implementation of the Potassco Suite, provided by the university of Potsdam \url{http://potassco.sourceforge.net/}.
+
+ASP (``Answer-Set-Solving'') is a form of declarative programming.
+It is based on the stable model (answer set) semantics of logic programming.
+
+
+
+
+The usual programming model is to generate the solution space and filter invalid solutions with constraints.
+The relevant part of the code is:
+
+\begin{verbatim}
+
+sudoku(X,Y,N) :- initial(X,Y,N).
+
+1 { sudoku(1..16,Y,N) } 1 :- Y=1..16, N=1..16.
+1 { sudoku(X,1..16,N) } 1 :- X=1..16, N=1..16.
+1 { sudoku(X,Y,1..16) } 1 :- X=1..16, Y=1..16.
+
+:- sudoku(X1,Y1,N), sudoku(X2,Y2,N), (X1,Y1) != (X2,Y2),
+(((X1-1)/4),((Y1-1)/4)) == (((X2-1)/4), ((Y2-1)/4)).
+
+\end{verbatim}
+
+
+The sudoku is modeled as a list of vectors with 3 elements respectively.
+The first two elements correspond to the X and Y coordinate and the third element corresponds to the number N in the field.
+
+The initial configuration \texttt{initial(X,Y,N)} ensures, that a \texttt{sudoku} term is generated with the given values.
+We generate for every permutation of row (Y) and number (N) exactly one \texttt{sudoku(X,Y,N)} term, such that the chosen column(X) lies between 1 and 16.
+Similarily, we permutate column and number to find a row(Y) and we permutate column and row to find a number(N).
+For the last constraint, we take two \texttt{sudoku} terms and compare if they are distinct, if their numbers are the same and if their coordinates lie in the same grid cell.
+In this case the two \texttt{sudoku} terms lie in the same 4x4 grid cell, which violates a constraint of the puzzle, and we reject this solution.
+
+
+
+
 \section{Windfarm}
 
 
 
-\begin{homeworkProblem}[Approach]
+\subsection{Approach}
+We started to implement random local search and terminate when we encounter the first improvement.
+We always continue with the new configuration if it is at least as good as the old configuration.
+We modify a random point with a random delta between $[-3,3] \in \mathbb{Z}$.
+With a little luck we find a ``better'' solution after 20000 iterations.
 
-\end{homeworkProblem}
+\subsection{Discussion}
+The improvements were poor, e.g.\ an improvement of 0.000003.
+Also, from our feeling, the execution time is rather high.
+Nevertheless, random local search simply \emph{works}.
+And this is the reason why we have chosen it:
+Random local search is a good starting point before you do anything more sophisticated.
 
-\begin{homeworkProblem}[Discussion]
-\end{homeworkProblem}
 
-\begin{homeworkProblem}[Findings]
-We started off by just implementing the cost function in a python script.
+\subsection{Findings}
+We started off by calling the cost function from our python program.
 Ie.\ we called the \texttt{c++} program with a subprocess and parsed the output as our costs result.
 Our first finding was that it's definitely unfeasible to simply generate random samples and try out the cost function.
 A totally randomized sample will run into the security constraint \emph{for sure}.
-For this reason it's necessary to start with a user-defined initial configuration that fullfills both constrains and then modify this configuration step by step.
+For this reason it's necessary to start with a user-defined initial configuration that fulfills both constraints and then modify this configuration step by step.
 
-\end{homeworkProblem}
 
 
 %----------------------------------------------------------------------------------------
