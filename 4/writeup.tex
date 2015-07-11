@@ -36,6 +36,7 @@
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage[utf8]{inputenc}
 
 % Margins
 \topmargin=-0.45in
@@ -184,6 +185,7 @@
 % To have just one problem per page, simply put a \clearpage after each problem
 \section{Sudoku}
 
+\subsection{Approach: Solving with Answer Set Programming}
 We modeled the sudoku problem with a solver for Answer Set Programming, a declarative programming model complex combinatorial problems in NP, such as satisfiability.
 We used the implementation of the Potassco Suite, provided by the University of Potsdam \url{http://potassco.sourceforge.net/}.
 
@@ -219,26 +221,30 @@ Similarily, the solver permutates the column and number to find a row(Y) and per
 
 The last constraint specifies that for two pairs of coordinates (X1, Y1) and (Y1, Y2), that (i) share the same number N, the coordinates have to be (ii) distinct if they lie in the same 4x4 square.
 
+\subsection{Solution}
+Some example solutions are provided in the file sudoku-solutions.txt.
+
+\subsection{Conclusion}
 This implementation was able to find \textbf{\textless N\textgreater} valid sudoku solutions in \textbf{\textless M\textgreater} seconds. Therefore we conclude that the ASP solver is a well-suited technique to solve the given problem, due to its combinatorial characteristics.
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 \section{Windfarm}
-
 
 
 \subsection{Approach}
 We started to implement random local search and terminate when we encounter the first improvement.
 We always continue with the new configuration if it is at least as good as the old configuration.
 We modify a random point with a random delta between $[-3,3] \in \mathbb{Z}$.
-In one out of three test runs we found a better solution, as evaluated by \texttt{./fcost} after 20000 iterations. In the other two the search heuristic was not successful even after 90 000 iterations.
+In one out of three test runs we found a better solution, as evaluated by \texttt{./fcost} after 20 000 iterations. In the other two runs the search heuristic was not successful even after 90 000 iterations.
 
 \subsection{Discussion}
 The runtime of the heuristic as well as its cost improvements when compared to our initial solution were poor, e.g.\ an improvement of 0.000003.
 However, the random local search was successful and this is the reason why we have chosen it:
 Random local search looks as if can be a good starting point before using more sophisticated algorithms.
 
-\subsection{Findings}
+\subsection{Conclusion}
 % We started off by calling the cost function from our python program.
 % Ie.\ we called the \texttt{c++} program with a subprocess and parsed the output as our costs result.
 Our first finding was that it is unfeasible to generate random samples and evaluate them with the provided cost function because a totally randomized sample too frequently violates the security constraint.
