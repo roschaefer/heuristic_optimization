@@ -231,23 +231,19 @@ This implementation was able to find \textbf{\textless N\textgreater} valid sudo
 We started to implement random local search and terminate when we encounter the first improvement.
 We always continue with the new configuration if it is at least as good as the old configuration.
 We modify a random point with a random delta between $[-3,3] \in \mathbb{Z}$.
-During three test runs we found a With a little luck we find a ``better'' solution after 20000 iterations.
+In one out of three test runs we found a better solution, as evaluated by \texttt{./fcost} after 20000 iterations. In the other two the search heuristic was not successful even after 90 000 iterations.
 
 \subsection{Discussion}
-The improvements were poor, e.g.\ an improvement of 0.000003.
-Also, from our feeling, the execution time is rather high.
-Nevertheless, random local search simply \emph{works}.
-And this is the reason why we have chosen it:
-Random local search is a good starting point before you do anything more sophisticated.
-
+The runtime of the heuristic as well as its cost improvements when compared to our initial solution were poor, e.g.\ an improvement of 0.000003.
+However, the random local search was successful and this is the reason why we have chosen it:
+Random local search looks as if can be a good starting point before using more sophisticated algorithms.
 
 \subsection{Findings}
-We started off by calling the cost function from our python program.
-Ie.\ we called the \texttt{c++} program with a subprocess and parsed the output as our costs result.
-Our first finding was that it's definitely unfeasible to simply generate random samples and try out the cost function.
-A totally randomized sample will run into the security constraint \emph{for sure}.
-For this reason it's necessary to start with a user-defined initial configuration that fulfills both constraints and then modify this configuration step by step.
+% We started off by calling the cost function from our python program.
+% Ie.\ we called the \texttt{c++} program with a subprocess and parsed the output as our costs result.
+Our first finding was that it is unfeasible to generate random samples and evaluate them with the provided cost function because a totally randomized sample too frequently violates the security constraint.
 
+For this reason it is necessary to start with a user-defined initial configuration that fulfills both the bounding box and security constraints and then modify this configuration step by step.
 
 
 %----------------------------------------------------------------------------------------
