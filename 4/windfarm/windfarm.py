@@ -63,4 +63,22 @@ def modify(points):
         delta = (randint(-3,3), randint(-3,3))
         points[index] = tuple(map(operator.add, points[index], delta))
         return points
+
+
+def rls():
+        ps = read_points()
+        initial_costs = costs(ps)
+        new_costs = initial_costs
+        i = 0
+        while (initial_costs <= new_costs):
+                i += 1
+                ps_modified = modify(ps)
+                new_costs = costs(ps_modified)
+                if (new_costs <= initial_costs):
+                        ps = ps_modified
+                if (new_costs < initial_costs):
+                        return ps, new_costs, i
+                if (i % 100 == 0):
+                    print(i)
+        return ps, new_costs
 embed()
