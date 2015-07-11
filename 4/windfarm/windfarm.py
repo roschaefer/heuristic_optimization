@@ -32,7 +32,7 @@ def bound_box_constraint(points):
     for p in points:
         if ( not (in_F1(p) or in_F2(p) or in_F3(p))):
                 return False
-        return True
+    return True
 
 def security_distance_constraint(points):
     for i in range(len(points)):
