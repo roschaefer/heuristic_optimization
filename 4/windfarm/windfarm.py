@@ -9,12 +9,14 @@ from random import randint
 def points_formatted(points):
     return '\n'.join([' '.join(map(str,p)) for p in points])
 
-def print_points(points):
+def print_optimized(points, costs):
     with open('optimized.dat', 'w') as the_file:
             the_file.write(str(len(points)))
             the_file.write('\n')
             the_file.write(points_formatted(points))
             the_file.write('\n')
+    with open('optimized.val', 'w') as the_file:
+            the_file.write(costs)
 
 def in_F1(point):
     x,y = point
@@ -43,7 +45,6 @@ def security_distance_constraint(points):
     return True
 
 def costs(points):
-    print_points(points)
     ps = subprocess.Popen(("cat", "optimized.dat"), stdout=subprocess.PIPE)
     costs = subprocess.check_output(("./fcost"), stdin=ps.stdout)
     return float(costs)
@@ -77,8 +78,9 @@ def rls():
                 if (new_costs <= initial_costs):
                         ps = ps_modified
                 if (new_costs < initial_costs):
+                        print_optimized(ps, new_costs)
                         return ps, new_costs, i
                 if (i % 100 == 0):
                     print(i)
-        return ps, new_costs
+
 embed()
