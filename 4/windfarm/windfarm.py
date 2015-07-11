@@ -83,4 +83,5 @@ def rls():
                 if (i % 100 == 0):
                     print(i)
 
-embed()
+if __name__ == "__main__":
+        rls()
