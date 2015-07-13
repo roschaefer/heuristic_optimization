@@ -60,7 +60,7 @@ def read_points():
 def modify(points):
         points = points.copy()
         index = randint(0, len(points)-1)
-        delta = (randint(-3,3), randint(-3,3))
+        delta = (randint(-100,100), randint(-100,100))
         points[index] = tuple(map(operator.add, points[index], delta))
         return points
 
@@ -70,16 +70,18 @@ def rls():
         initial_costs = costs(ps)
         new_costs = initial_costs
         i = 0
-        while (initial_costs <= new_costs):
+        while (i < 500):
                 i += 1
                 ps_modified = modify(ps)
                 new_costs = costs(ps_modified)
-                if (new_costs <= initial_costs):
-                        ps = ps_modified
                 if (new_costs < initial_costs):
-                        return ps, new_costs, i
+                        ps = ps_modified
+                # if (new_costs < initial_costs):
+                #         # return ps, new_costs, i
+                #         break
                 if (i % 100 == 0):
                     print(i)
+        print(ps, i, new_costs)
         return ps, new_costs
 
 if __name__ == '__main__':
