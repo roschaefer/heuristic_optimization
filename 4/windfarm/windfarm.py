@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-import optunity
+# import optunity
 import math
 import operator
-from IPython import embed
+# from IPython import embed
 import subprocess
 from random import randint
+import random
+import matplotlib.pyplot as plt
 
 def points_formatted(points):
     return '\n'.join([' '.join(map(str,p)) for p in points])
@@ -44,6 +46,10 @@ def security_distance_constraint(points):
                 return False
     return True
 
+def complies_constraints(points):
+    return bound_box_constraint(points) and security_distance_constraint(points)
+
+
 def costs(points):
     ps = subprocess.Popen(("cat", "optimized.dat"), stdout=subprocess.PIPE)
     costs = subprocess.check_output(("./fcost"), stdin=ps.stdout)
@@ -57,31 +63,64 @@ def read_points():
         points.append(tuple(map(int, line.split())))
     return points
 
+def modify(points, sigma):
+    points = list(points) # same as copy() but compatible with python 2.7
+    moveThese = random.getrandbits(len(points))
+    for i in range(len(points)):
+        if random.randint(0, 100) > 50:
+            # new_point = (randint(-100, 100), randint(-100, 100))
+            new_point = sample_point(points[i], sigma)
+            points[i] = new_point
+            #points[index] = tuple(map(operator.add, points[index], delta))
+    return points
 
-def modify(points):
-        points = points.copy()
-        index = randint(0, len(points)-1)
-        delta = (randint(-3,3), randint(-3,3))
-        points[index] = tuple(map(operator.add, points[index], delta))
-        return points
 
+def sample_point(point, sigma):
+    x = random.gauss(point[0], sigma)
+    y = random.gauss(point[1], sigma)
+    return (x, y)
+
+def plot_windfarms(points, i, sigma):
+    plt.clf()
+    plt.scatter([p[0] for p in points], [p[1] for p in points])
+    plt.title("i: %s, sigma: %s" %(i, sigma))
+    plt.draw()
+
+fig=plt.figure()
+plt.xlim([0, 10000])
+plt.ylim([0, 10000])
+plt.ion()
+plt.show(block=False)
 
 def rls():
         ps = read_points()
-        initial_costs = costs(ps)
+        sigma = 1
+        #ps = [sample_point((randint(0, 10000), randint(0, 10000)), sigma) for i in range(200)]
+        initial_costs = float("inf")
+        # initial_costs = costs(ps)
         new_costs = initial_costs
         i = 0
+        plot_windfarms(ps, i, sigma)
         while (initial_costs <= new_costs):
                 i += 1
-                ps_modified = modify(ps)
-                new_costs = costs(ps_modified)
-                if (new_costs <= initial_costs):
-                        ps = ps_modified
-                if (new_costs < initial_costs):
-                        print_optimized(ps, new_costs)
-                        return ps, new_costs, i
-                if (i % 100 == 0):
-                    print(i)
+                ps_modified = modify(ps, sigma)
+                if complies_constraints(ps_modified):
+                    print("#####")
+                    plot_windfarms(ps, i, sigma)
+                    new_costs = costs(ps_modified)
+                    if (new_costs <= initial_costs):
+                            ps = ps_modified
+                            sigma = sigma * 0.5
+                            plot_windfarms(ps, i, sigma)
+                            print("---------------")
+                    if (new_costs < initial_costs):
+                            print_optimized(ps, new_costs)
+                            return ps, new_costs, i
+                if (i % 1000 == 0):
+                    # ps = ps_modified
+                    plot_windfarms(ps, i, sigma)
+                    print(i, new_costs)
+
 
 if __name__ == "__main__":
-        rls()
+    rls()
