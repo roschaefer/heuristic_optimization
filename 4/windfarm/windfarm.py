@@ -81,4 +81,6 @@ def rls():
                 if (i % 100 == 0):
                     print(i)
         return ps, new_costs
-embed()
+
+if __name__ == '__main__':
+    rls()
