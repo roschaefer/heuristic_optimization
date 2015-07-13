@@ -5,6 +5,8 @@ import operator
 from IPython import embed
 import subprocess
 from random import randint
+import random
+
 
 def points_formatted(points):
     return '\n'.join([' '.join(map(str,p)) for p in points])
@@ -66,6 +68,42 @@ def modify(points):
         points[index] = tuple(map(operator.add, points[index], delta))
         return points
 
+def modify_gauss(points, sigma):
+        points = points.copy()
+        index = randint(0, len(points)-1)
+        p = sample_gauss(points[index], sigma)
+        points[index] = p
+        return points
+
+def sample_gauss(point, sigma):
+    x = random.gauss(point[0], sigma)
+    y = random.gauss(point[1], sigma)
+    return x, y
+
+def rls_gauss():
+        ps = read_points()
+        initial_costs = costs(ps)
+        new_costs = best_cost = initial_costs
+        print("### initial cost: ", initial_costs)
+        i = 0
+        sigma = 1000
+        while (i < 500):
+                i += 1
+                ps_modified = modify_gauss(ps, sigma)
+                new_costs = costs(ps_modified)
+                if (new_costs < initial_costs):
+                        ps = ps_modified
+                        best_cost = new_costs
+                        print_points(ps, best_cost)
+                        sigma = sigma * 0.7
+                # if (new_costs < initial_costs):
+                #         # return ps, new_costs, i
+                #         break
+                if (i % 100 == 0):
+                    print(i)
+        print(ps, i, sigma, best_cost)
+        return ps, best_cost
+
 
 def rls():
         ps = read_points()
@@ -90,4 +128,4 @@ def rls():
         return ps, best_cost
 
 if __name__ == '__main__':
-    rls()
+    rls_gauss()
