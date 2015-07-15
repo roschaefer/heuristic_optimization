@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-import optunity
 import math
 import operator
-from IPython import embed
 import subprocess
 from random import randint
 import random
+import csv
 
 
 def points_formatted(points):
@@ -80,52 +79,64 @@ def sample_gauss(point, sigma):
     y = random.gauss(point[1], sigma)
     return x, y
 
+def write_best_costs(best_costs, best, i):
+    with open('costs.csv', 'w') as f:
+        w = csv.writer(f)
+        [w.writerow([b[0], b[1]]) for b in best_costs]
+        [w.writerow([i, best]) for b in best_costs]
+
 def rls_gauss():
         ps = read_points()
         initial_costs = costs(ps)
         new_costs = best_cost = initial_costs
+        best_costs = []
         print("### initial cost: ", initial_costs)
         i = 0
-        sigma = 1000
-        while (i < 500):
+        sigma = 5000
+        DAMPEN = 0.9
+        best_costs.append((i, new_costs))
+        while (i < 2000):
                 i += 1
                 ps_modified = modify_gauss(ps, sigma)
                 new_costs = costs(ps_modified)
-                if (new_costs < initial_costs):
+                if (new_costs < best_cost):
+                    best_costs.append((i, new_costs))
+                if (new_costs < best_cost):
                         ps = ps_modified
                         best_cost = new_costs
                         print_points(ps, best_cost)
-                        sigma = sigma * 0.7
-                # if (new_costs < initial_costs):
-                #         # return ps, new_costs, i
-                #         break
+                        if sigma > 50:
+                            sigma = sigma* DAMPEN
                 if (i % 100 == 0):
                     print(i)
+        write_best_costs(best_costs, best_cost, i)
         print(ps, i, sigma, best_cost)
-        return ps, best_cost
 
 
 def rls():
         ps = read_points()
         initial_costs = costs(ps)
         new_costs = best_cost = initial_costs
-        print("### initial cost: ", initial_costs)
+        best_costs = []
         i = 0
-        while (i < 500):
+        print("### initial cost: ", initial_costs)
+        best_costs.append((i, new_costs))
+        while (i < 2000):
                 i += 1
                 ps_modified = modify(ps)
                 new_costs = costs(ps_modified)
-                if (new_costs < initial_costs):
+                if (new_costs <= initial_costs):
                         ps = ps_modified
-                        best_cost = new_costs
                         print_points(ps, best_cost)
-                # if (new_costs < initial_costs):
-                #         # return ps, new_costs, i
-                #         break
+                if (new_costs < best_cost):
+                    best_cost = new_costs
+                    best_costs.append((i, best_cost))
                 if (i % 100 == 0):
                     print(i)
+        write_best_costs(best_costs, best_cost, i)
         print(ps, i, best_cost)
         return ps, best_cost
 
 if __name__ == '__main__':
     rls_gauss()
+

@@ -167,7 +167,7 @@
 }
 
 \author{\textbf{\hmwkAuthorName}}
-\date{} % Insert date here if you want it to appear below your name
+\date{13.07.2015} % Insert date here if you want it to appear below your name
 
 %----------------------------------------------------------------------------------------
 
@@ -225,7 +225,7 @@ The last constraint specifies that for two pairs of coordinates (X1, Y1) and (Y1
 Some example solutions are provided in the file sudoku-solutions.txt.
 
 \subsection{Conclusion}
-This implementation was able to find \textbf{\textless N\textgreater} valid sudoku solutions in \textbf{\textless M\textgreater} seconds. Therefore we conclude that the ASP solver is a well-suited technique to solve the given problem, due to its combinatorial characteristics.
+This implementation was able to find valid sudoku solutions in less than 1 second. Therefore we conclude that the ASP solver is a well-suited technique to solve the given problem, due to its combinatorial characteristics.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -234,22 +234,59 @@ This implementation was able to find \textbf{\textless N\textgreater} valid sudo
 
 
 \subsection{Approach}
-We started to implement random local search and terminate when we encounter the first improvement.
-We always continue with the new configuration if it is at least as good as the old configuration.
-We modify a random point with a random delta between $[-3,3] \in \mathbb{Z}$.
-In one out of three test runs we found a better solution, as evaluated by \texttt{./fcost} after 20 000 iterations. In the other two runs the search heuristic was not successful even after 90 000 iterations.
+\subsubsection{Random Local Search}
+We started to implement random local search and always continue with the new configuration if it is at least as good as the old configuration. In each iteration we modify a randomly chosen point by a random delta between $[-100,100] \in \mathbb{Z}$. In Figure~\ref{random} it is visible that this run finds its optimum fairly early, after around 100 iterations and then does not improve the cost of its found configurations.
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\linewidth]{img/random-delta-100-2.png}
+    \centering
+    \caption{Cost over iterations for a random delta between $[-100,100]$.}
+    \label{random}
+\end{figure}
+
+
+\subsubsection{Convolutional Search with Gauss Sampling}
+We then modified our random local search: Instead of adding a random delta to a randomly chosen point we set each coordinate from a randomly chosen point (x, y) to a value sampled from a Gaussian distribution with $\mu$ being the current coordinate and standard deviation $\sigma$. If the cost is lower than the current optimum, we decrease the current standart deviation $\sigma$ by a factor $\alpha$.
+
+From the Figures~\ref{s5000-min} and \ref{s1000-min} we cannot conclude a difference in final convergence between a standard deviation of $\sigma=5000$ or $\sigma=1000$. However, we tried with smaller values and observed that they do not get placed far enough from the initial configuration to find a better placement.
+
+In Figure~\ref{s5000-no-min} we observe that setting a lower bound for the standard deviation sigma appears to have an effect: The cost ceases to converge too early. In fact, we observed during multiple runs that not decreasing $\sigma$ arbitrarily prolongs the phase of decreasing cost. The reason might most likely be that even during late iterations there is still a certain flexibility to place wind turbines, which is not the case when $\sigma$ can shrink arbitrarily small.
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\linewidth]{img/gauss-s5000-min50.png}
+    \centering
+    \caption{Cost over iterations for $\sigma=5000$, $\sigma_{min}=50$, $\alpha=0.9$}
+    \label{s5000-min}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\linewidth]{img/gauss-s1000-min50.png}
+    \centering
+    \caption{Cost over iterations for $\sigma=1000$, $\sigma_{min}=50$, $\alpha=0.9$}
+    \label{s1000-min}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\linewidth]{img/gauss-s5000-min0.png}
+    \centering
+    \caption{Cost over iterations for $\sigma=5000$, $\sigma_{min}=0$, $\alpha=0.9$}
+    \label{s5000-no-min}
+\end{figure}
+
 
 \subsection{Discussion}
-The runtime of the heuristic as well as its cost improvements when compared to our initial solution were poor, e.g.\ an improvement of 0.000003.
-However, the random local search was successful and this is the reason why we have chosen it:
-Random local search looks as if can be a good starting point before using more sophisticated algorithms.
 
-\subsection{Conclusion}
-% We started off by calling the cost function from our python program.
-% Ie.\ we called the \texttt{c++} program with a subprocess and parsed the output as our costs result.
+The convolution approach using gaussian sampling moving only one turbine per iteration turned out to be most successful in terms of convergence because it continuously improves and produced the least cost. A parameter configuration of a fairly high $\sigma$ between 1000 and 5000 allows for variability in the turbine placement whereas a dampening factor of $\alpha=0.9$ for $\sigma$ after each cost improvement turned out to be the best parameter during our test runs.
+
+The minimal solution found with these parameters is 0.0019941. However, a basic random local search also found a solution (cost = 0.00199964) better than the initial one (cost = 0.00199975).
+
+\subsection{Conclusions}
 Our first finding was that it is unfeasible to generate random samples and evaluate them with the provided cost function because a totally randomized sample too frequently violates the security constraint.
+For this reason it is necessary to start with a user-defined initial configuration that fulfills both the bounding box and security constraints and then modify this configuration in each iteration.
 
-For this reason it is necessary to start with a user-defined initial configuration that fulfills both the bounding box and security constraints and then modify this configuration step by step.
+We also conclude, that a convolutional aproach is beneficial over a pure random local search to achieve a continuous convergence and a better final solution. In order to continue decreasing the cost it is important to set a lower bound for the variability in the solution.
+
+From our two implementations we thus conclude that that a fairly simple algorithm can be a good starting point before using more sophisticated implementations.
 
 
 %----------------------------------------------------------------------------------------
